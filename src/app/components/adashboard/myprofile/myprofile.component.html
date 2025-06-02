@@ -1,0 +1,39 @@
+
+<div class="container mt-4">
+    <h2>My Profile</h2>
+  
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+     
+      <div class="mb-3 text-center">
+        <img [src]="imagePreview || 'assets/default-profile.png'" class="rounded-circle" width="150" height="150" alt="Profile">
+        <input type="file" (change)="onImageChange($event)" class="form-control mt-2">
+      </div>
+  
+    
+      <div class="mb-3">
+        <label>Full Name</label>
+        <input class="form-control" formControlName="full_name">
+      </div>
+  
+     
+      <div class="mb-3">
+        <label>Email</label>
+        <input class="form-control" formControlName="email">
+      </div>
+  
+    
+      <div class="mb-3">
+        <label>Phone Number</label>
+        <input class="form-control" formControlName="phone_number">
+      </div>
+  
+      
+      <div class="mb-3">
+        <label>Total Earnings</label>
+        <input class="form-control" [value]="earnings" readonly>
+      </div>
+  
+      <button class="btn btn-primary" type="submit">Update Profile</button>
+    </form>
+  </div>
+  

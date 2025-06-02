@@ -1,0 +1,36 @@
+<div class="edit-artwork-form" *ngIf="!loading">
+    <h2>Edit Artwork</h2>
+    <form [formGroup]="artworkForm" (ngSubmit)="updateArtwork()" enctype="multipart/form-data">
+      
+      <label>Title</label>
+      <input type="text" formControlName="title" />
+  
+      <label>Category</label>
+      <input type="text" formControlName="category_name" />
+  
+      <label>Price</label>
+      <input type="number" formControlName="price" />
+  
+      <label>Quantity</label>
+      <input type="number" formControlName="quantity" />
+  
+      <label>Style</label>
+      <input type="text" formControlName="style" />
+  
+      <label>Description</label>
+      <textarea formControlName="description"></textarea>
+  
+      <label>Artwork Image</label>
+      <input type="file" (change)="onFileSelected($event)" />
+      <button type="submit" [disabled]="artworkForm.invalid">Update Artwork</button>
+    </form>
+  
+    <div *ngIf="errorMessage" class="error">
+      {{ errorMessage }}
+    </div>
+  </div>
+  
+  <div *ngIf="loading">
+    Loading artwork details...
+  </div>
+  

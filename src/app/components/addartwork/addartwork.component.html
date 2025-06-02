@@ -1,0 +1,121 @@
+<div class="add-artwork-container">
+    <div class="form-wrapper">
+      <h2>Add New Artwork</h2>
+      
+      <form (ngSubmit)="onSubmit()" #artworkForm="ngForm" class="artwork-form">
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input 
+            type="text" 
+            id="title" 
+            name="title"
+            [(ngModel)]="artwork.title" 
+            required 
+            maxlength="30"
+            class="form-control"
+            placeholder="Enter artwork title">
+        </div>
+  
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea 
+            id="description" 
+            name="description"
+            [(ngModel)]="artwork.description" 
+            required 
+            rows="4"
+            class="form-control"
+            placeholder="Enter detailed description"></textarea>
+        </div>
+  
+        <div class="form-row">
+          <div class="form-group">
+            <label for="category">Category</label>
+            <select 
+              id="category" 
+              name="category_name"
+              [(ngModel)]="artwork.category_name" 
+              required 
+              class="form-control">
+              <option value="">Select Category</option>
+              <option *ngFor="let category of categories" [value]="category.toLowerCase()">
+                {{ category | titlecase }}
+              </option>
+            </select>
+          </div>
+  
+          <div class="form-group">
+            <label for="style">Style</label>
+            <select 
+              id="style" 
+              name="style"
+              [(ngModel)]="artwork.style" 
+              required 
+              class="form-control">
+              <option value="">Select Style</option>
+              <option *ngFor="let style of styles" [value]="style.toLowerCase()">
+                {{ style }}
+              </option>
+            </select>
+          </div>
+        </div>
+  
+        <div class="form-row">
+          <div class="form-group">
+            <label for="price">Price</label>
+            <input 
+              type="number" 
+              id="price" 
+              name="price"
+              [(ngModel)]="artwork.price" 
+              required 
+              min="0"
+              step="0.01"
+              class="form-control"
+              placeholder="0.00">
+          </div>
+  
+          <div class="form-group">
+            <label for="quantity">Quantity/Stock</label>
+            <input 
+              type="number" 
+              id="quantity" 
+              name="quantity"
+              [(ngModel)]="artwork.quantity" 
+              min="0"
+              class="form-control"
+              placeholder="0">
+          </div>
+        </div>
+  
+        <div class="form-group">
+          <label for="artImage">Artwork Image</label>
+          <input 
+            type="file" 
+            id="artImage" 
+            name="artImage"
+            (change)="onFileSelected($event)" 
+            accept="image/*"
+            required 
+            class="form-control file-input">
+          <small class="form-text">Please select an image file (JPG, PNG, etc.)</small>
+        </div>
+  
+        <div class="form-actions">
+          <button 
+            type="button" 
+            class="btn btn-secondary"
+            (click)="resetForm()">
+            Reset
+          </button>
+          <button 
+            type="submit" 
+            class="btn btn-primary"
+            [disabled]="!artworkForm.form.valid || isLoading">
+            <span *ngIf="isLoading" class="loading-spinner"></span>
+            {{ isLoading ? 'Adding...' : 'Add Artwork' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>

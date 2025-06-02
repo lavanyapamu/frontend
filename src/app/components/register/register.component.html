@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+  <div class="register-container d-flex justify-content-center align-items-center vh-100 custom-gap">
+    <div class="register-box p-4 rounded shadow-sm bg-white">
+      <h2 style="color: #2A4178; display: flex; align-items: center; gap: 10px; justify-content: center; margin-bottom: 1.5rem;">
+        <img src="color-palette_18099443.png" alt="Color Palette Icon" style="width: 40px; height: 40px;">
+        ARTFLARE
+      </h2>
+      <h4 class="text-center mb-4">REGISTER</h4>
+  
+      <div class="d-flex justify-content-center mb-3 toggle-role">
+        <button class="btn" 
+                [ngClass]="{ 'btn-primary': selectedRole === 'buyer', 'btn-': selectedRole !== 'buyer' }" 
+                (click)="selectRole('buyer')">Buyer</button>
+        <button class="btn ms-2" 
+                [ngClass]="{ 'btn-primary': selectedRole === 'artist', 'btn-outline-primary': selectedRole !== 'artist' }" 
+                (click)="selectRole('artist')">Artist</button>
+      </div>
+  
+      <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
+        <div class="mb-3">
+          <input type="text" class="form-control" placeholder="Full Name..." required [(ngModel)]="user.fullName" name="fullName">
+        </div>
+        <div class="mb-3">
+          <input type="email" class="form-control" placeholder="Email..." required [(ngModel)]="user.email" name="email">
+        </div>
+        <div class="mb-3">
+          <input type="password" class="form-control" placeholder="Password..." required [(ngModel)]="user.password" name="password">
+        </div>
+        <div class="mb-3">
+          <input type="password" class="form-control" placeholder="Confirm Password..." required [(ngModel)]="user.confirmPassword" name="confirmPassword">
+        </div>
+  
+        <div class="d-grid mb-3">
+          <button type="submit" class="btn btn-primary" [disabled]="!registerForm.valid">Sign Up</button>
+        </div>
+  
+        <p class="text-center small">
+          By clicking Sign Up, you agree to our <a href="#" class="text-primary">Terms and Conditions</a>
+        </p>
+        <button type="button" (click)="goToLogin()" class="btn btn-link">
+            Already have an account? Login
+          </button>
+      </form>
+      
+    </div>
+    <div>
+      <img src="11057.jpg" alt="Artwork" class="img-fluid" style="max-width: 700px; height: auto;">
+    </div>    
+  </div>
+  
+</body>
+</html> 
+
+

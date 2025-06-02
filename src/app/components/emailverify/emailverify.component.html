@@ -1,0 +1,13 @@
+<div class="verification-container">
+  <div *ngIf="!isVerified">
+    <h4>Check Your Email</h4>
+    <p>We sent a verification link to <b>{{ userEmail }}</b></p>
+    <p>Didn't get it? <a href="#" (click)="resendEmail()">Click here</a></p>
+    <button class="btn btn-primary mt-3" (click)="verifyEmail()">Verify Now</button>
+  </div>
+
+  <div *ngIf="isVerified">
+    <h4>Email Verified!</h4>
+    <button class="btn btn-success mt-3" (click)="goToLogin()">Back to Login</button>
+  </div>
+</div>

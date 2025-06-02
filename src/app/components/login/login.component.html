@@ -1,0 +1,63 @@
+
+
+<div class="container-fluid vh-100 d-flex align-items-center justify-content-center login-page">
+  <div class="d-flex align-items-center justify-content-center custom-gap">
+    
+    <div class="card p-5 shadow rounded-4 login-card" style="width: 400px;">
+      <h2 style="color: #2A4178; display: flex; align-items: center; gap: 10px; justify-content: center; margin-bottom: 1.5rem;">
+        <img src="color-palette_18099443.png" alt="Color Palette Icon" style="width: 40px; height: 40px;">
+        ARTFLARE
+      </h2>
+      <h4 class="text-center mb-3">Welcome back</h4>
+
+      <form (ngSubmit)="onLogin()" #loginForm="ngForm">
+        <div class="mb-3">
+          <input 
+            type="text" 
+            class="form-control" 
+            placeholder="Email..." 
+            [(ngModel)]="email" 
+            name="email" 
+            required>
+        </div>
+
+        <div class="mb-3 input-group">
+          <input 
+            [type]="showPassword ? 'text' : 'password'" 
+            class="form-control" 
+            placeholder="Password..." 
+            [(ngModel)]="password" 
+            name="password" 
+            required>
+          <button type="button" class="btn btn-outline-secondary" (click)="togglePassword()">
+            <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+          </button>
+        </div>
+
+      
+        <div *ngIf="error" class="text-danger mb-2 text-center">
+          {{ error }}
+        </div>
+
+      
+        <div class="mb-2 text-end">
+          <a href="#" class="text-primary small">Forgot Password?</a>
+        </div>
+
+       
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+
+        
+        <div class="text-center mt-3">
+          <span>Don't have an account?</span>
+          <button type="button" class="btn btn-link p-0" (click)="goToRegister()">Register here</button>
+        </div>
+      </form>
+    </div>
+
+    
+    <div>
+      <img src="11057.jpg" alt="Artwork" class="img-fluid" style="max-width: 700px; height: auto;" />
+    </div>
+  </div>
+</div>
