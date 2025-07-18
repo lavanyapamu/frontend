@@ -215,7 +215,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-    -webkit-line-clamp: 2; /* Show only 2 lines */
+   
     -webkit-box-orient: vertical;
   }
   
