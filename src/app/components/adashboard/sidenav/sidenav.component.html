@@ -1,28 +1,33 @@
 <main class="main-content">
-    
-    <aside class="sidebar">
-      <div class="sidebar-item active">
-        <span class="sidebar-icon">📊</span>
-        <span routerLink="/artistd/dashboard" routerLinkActive="active" class="sidebar-text">Dashboard</span>
-      </div>
-      <div class="sidebar-item">
-        <span class="sidebar-icon">🎨</span>
-        <span routerLink="/artistd/artworks" routerLinkActive="active" class="sidebar-text">My Artworks</span>
-      </div>
-      <div class="sidebar-item">
-        <span class="sidebar-icon">📋</span>
-        <span routerLink="/artistd/orders" routerLinkActive="active" class="sidebar-text">Orders</span>
-      </div>
-      <div class="sidebar-item">
-        <span class="sidebar-icon">💰</span>
-        <span class="sidebar-text">Earnings</span>
-      </div>
-      <div class="sidebar-item">
-        <span class="sidebar-icon">⚙️</span>
-        <span routerLink="/artistd/myprofile" routerLinkActive="active" class="sidebar-text">Settings</span>
-      </div>
-      <div class="sidebar-item logout-item">
-        <span class="sidebar-icon">🚪</span>
-        <span class="sidebar-text">Logout</span>
-      </div>
-    </aside>
+  <aside class="sidebar">
+    <a routerLink="/artistd/dashboard" routerLinkActive="active" class="sidebar-item">
+      <i class="fas fa-chart-bar sidebar-icon text-primary"></i>
+      <span class="sidebar-text">Dashboard</span>
+    </a>
+
+    <a routerLink="/artistd/artworks" routerLinkActive="active" class="sidebar-item">
+      <i class="fas fa-palette sidebar-icon text-danger"></i>
+      <span class="sidebar-text">My Artworks</span>
+    </a>
+
+    <a routerLink="/artistd/orders" routerLinkActive="active" class="sidebar-item">
+      <i class="fas fa-receipt sidebar-icon text-success"></i>
+      <span class="sidebar-text">Orders</span>
+    </a>
+
+    <a routerLink="/artistd/earnings" routerLinkActive="active" class="sidebar-item">
+      <i class="fas fa-wallet sidebar-icon text-warning"></i>
+      <span class="sidebar-text">Earnings</span>
+    </a>
+
+    <a routerLink="/artistd/myprofile" routerLinkActive="active" class="sidebar-item">
+      <i class="fas fa-cog sidebar-icon"></i>
+      <span class="sidebar-text">Settings</span>
+    </a>
+
+    <div class="sidebar-item logout-item" (click)="logout()">
+      <i class="fas fa-sign-out-alt sidebar-icon"></i>
+      <span class="sidebar-text">Logout</span>
+    </div>
+  </aside>
+</main>

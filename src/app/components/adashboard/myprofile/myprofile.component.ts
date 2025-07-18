@@ -1,23 +1,24 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup,  FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {  UserService } from '../../../../user.service';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-myprofile',
-  imports: [FormsModule, ReactiveFormsModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './myprofile.component.html',
   styleUrl: './myprofile.component.css'
 })
 export class MyProfileComponent implements OnInit {
   profileForm!: FormGroup;
+  isEditMode = false;
   user_id: string = localStorage.getItem('user_id') || '';
-
- // replace this with dynamic value from Cognito or localStorage
-  profileImageFile!: File;
   imagePreview: string | ArrayBuffer | null = null;
+  profileImageFile!: File;
   earnings: number = 0;
 
-  constructor(private fb: FormBuilder, private userService: UserService) {}
+  constructor(private fb: FormBuilder, private http: HttpClient) {}
 
   ngOnInit(): void {
     this.profileForm = this.fb.group({
@@ -26,18 +27,43 @@ export class MyProfileComponent implements OnInit {
       phone_number: ['']
     });
 
-    this.userService.getUser(this.user_id).subscribe((user: any) => {
-      this.profileForm.patchValue({
-        full_name: user.full_name,
-        email: user.email,
-        phone_number: user.phone_number
-      });
-      this.earnings = user.earnings;
+    this.loadProfile();
+  }
 
-      if (user.profile_image) {
-        this.imagePreview = 'data:image/png;base64,' + user.profile_image;
+  loadProfile(): void {
+    const token = localStorage.getItem('access_token') || ''; 
+
+    this.http.get<any>(
+      `http://localhost:5000/api/users/${this.user_id}`,
+      {
+        headers: new HttpHeaders().set('Authorization', `Bearer ${token}`)
+      }
+    ).subscribe({
+      next: (user) => {
+        this.profileForm.patchValue({
+          full_name: user.full_name,
+          email: user.email,
+          phone_number: user.phone_number
+        });
+        this.earnings = user.earnings;
+        console.log(" Backend returned image value:", user.profile_image);
+
+        if (user.profile_image) {
+          this.imagePreview = user.profile_image
+          ? `http://localhost:5000/static/uploads/${user.profile_image}?t=${Date.now()}`
+          : null;
+
+        }
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Could not load profile.');
       }
     });
+  }
+
+  enableEdit(): void {
+    this.isEditMode = true;
   }
 
   onImageChange(event: any): void {
@@ -45,25 +71,42 @@ export class MyProfileComponent implements OnInit {
     if (file) {
       this.profileImageFile = file;
       const reader = new FileReader();
-      reader.onload = e => this.imagePreview = reader.result;
+      reader.onload = () => {
+        this.imagePreview = reader.result;
+      };
       reader.readAsDataURL(file);
     }
   }
 
   onSubmit(): void {
     const formData = new FormData();
-    const formValue = this.profileForm.value;
+    formData.append('full_name', this.profileForm.value.full_name);
+    formData.append('email', this.profileForm.value.email);
+    formData.append('phone_number', this.profileForm.value.phone_number);
 
-    formData.append('full_name', formValue.full_name);
-    formData.append('email', formValue.email);
-    formData.append('phone_number', formValue.phone_number);
     if (this.profileImageFile) {
       formData.append('profile_image', this.profileImageFile);
+     
     }
-    console.log("came here")
-    this.userService.update_user(this.user_id, formData).subscribe({
-      next: res => alert(res.message),
-      error: err => alert(err.error?.error || 'Profile update failed.')
+    console.log(this.profileImageFile);
+    const token = localStorage.getItem('access_token') || '';
+
+    this.http.patch<any>(
+      `http://localhost:5000/api/users/${this.user_id}`,
+      formData,
+      {
+        headers: new HttpHeaders().set('Authorization', `Bearer ${token}`)
+      }
+    ).subscribe({
+      next: (res) => {
+        alert(res.message || 'Profile updated.');
+        this.isEditMode = false;
+        setTimeout(() => this.loadProfile(), 300);
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Update failed.');
+      }
     });
   }
 }

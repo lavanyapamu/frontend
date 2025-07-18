@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -10,7 +10,7 @@ import { jwtDecode } from 'jwt-decode';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule],
+  imports: [CommonModule, FormsModule, HttpClientModule, RouterLink, RouterLinkActive],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -42,16 +42,16 @@ export class LoginComponent {
         console.log('Role ID:', role_id);
         
         localStorage.setItem('user_id', res.user_id);
-        localStorage.setItem('token', res.token)
+        localStorage.setItem('access_token', res.token)
         localStorage.setItem('role_id', res.role_id);
          
         
         if (role_id === 2) {
-          this.router.navigate(['/artistd/artist']);
+          this.router.navigate(['/artistd/artist'], { replaceUrl: true });
         } else if (role_id === 3) {
-          this.router.navigate(['/buyerdashboard']);
+          this.router.navigate(['/buyerdashboard'], { replaceUrl: true });
         } else {
-          this.router.navigate(['/home']);
+          this.router.navigate(['main/home'], { replaceUrl: true });
         }
       },
       error: (err) => {
@@ -63,4 +63,6 @@ export class LoginComponent {
   goToRegister() {
     this.router.navigate(['/register']);
   }
+
+  
 }

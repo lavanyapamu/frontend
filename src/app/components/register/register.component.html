@@ -1,18 +1,10 @@
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
   <div class="register-container d-flex justify-content-center align-items-center vh-100 custom-gap">
-    <div class="register-box p-4 rounded shadow-sm bg-white">
-      <h2 style="color: #2A4178; display: flex; align-items: center; gap: 10px; justify-content: center; margin-bottom: 1.5rem;">
-        <img src="color-palette_18099443.png" alt="Color Palette Icon" style="width: 40px; height: 40px;">
-        ARTFLARE
-      </h2>
+    <div class="register-box p-4 rounded bg-white">
+      <div style="display: flex; align-items: center; gap: 10px; justify-content: center; ">
+        <img src="artlogo.png" alt="Color Palette Icon" style="width: 90px; height: 90px;">
+      </div>
+      <div class="login-card  ">
       <h4 class="text-center mb-4">REGISTER</h4>
   
       <div class="d-flex justify-content-center mb-3 toggle-role">
@@ -24,7 +16,7 @@
                 (click)="selectRole('artist')">Artist</button>
       </div>
   
-      <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
+      <form class="" (ngSubmit)="onSubmit()" #registerForm="ngForm">
         <div class="mb-3">
           <input type="text" class="form-control" placeholder="Full Name..." required [(ngModel)]="user.fullName" name="fullName">
         </div>
@@ -49,14 +41,11 @@
             Already have an account? Login
           </button>
       </form>
-      
+    </div>
     </div>
     <div>
       <img src="11057.jpg" alt="Artwork" class="img-fluid" style="max-width: 700px; height: auto;">
     </div>    
   </div>
   
-</body>
-</html> 
-
 

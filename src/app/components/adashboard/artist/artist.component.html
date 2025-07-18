@@ -1,66 +1,4 @@
 
-<!-- <div class="dashboard-container"> -->
- 
-  <!-- <header class="header">
-    <div class="header-left">
-      <h1 class="logo">ARTFLARE</h1>
-    </div>
-    <nav class="header-nav">
-      <a routerLink="/orders" routerLinkActive="active" class="nav-link">Orders</a>
-      <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">Dashboard</a>
-      <a routerLink="/myprofile" routerLinkActive="active" class="nav-link">My Profile</a>
-    </nav>
-    <div class="header-right">
-      <div class="dropdown">
-        <div class="profile-avatar">👤</div>
-        <div class="dropdown-content">
-          <a href="#" class="dropdown-item">
-            <span class="dropdown-icon">⚙️</span>
-            Settings
-          </a>
-          <hr class="dropdown-divider">
-          <a href="#" class="dropdown-item logout">
-            <span class="dropdown-icon">🚪</span>
-            Logout
-          </a>
-        </div>
-      </div>
-    </div>
-  </header> -->
-
-  
-  <!-- <main class="main-content"> -->
-    
-    <!-- <aside class="sidebar">
-      <div class="sidebar-item active">
-        <span class="sidebar-icon">📊</span>
-        <span class="sidebar-text">Dashboard</span>
-      </div>
-      <div class="sidebar-item">
-        <span class="sidebar-icon">🎨</span>
-        <span class="sidebar-text">My Artworks</span>
-      </div>
-      <div class="sidebar-item">
-        <span class="sidebar-icon">📋</span>
-        <span class="sidebar-text">Orders</span>
-      </div>
-      <div class="sidebar-item">
-        <span class="sidebar-icon">💰</span>
-        <span class="sidebar-text">Earnings</span>
-      </div>
-      <div class="sidebar-item">
-        <span class="sidebar-icon">⚙️</span>
-        <span class="sidebar-text">Settings</span>
-      </div>
-      <div class="sidebar-item logout-item">
-        <span class="sidebar-icon">🚪</span>
-        <span class="sidebar-text">Logout</span>
-      </div>
-    </aside> -->
-
-    
-    <!-- <div class="dashboard-content"> -->
-     
       <div class="stats-grid">
         <div class="stat-card blue">
           <h3>Total Artworks</h3>
@@ -72,10 +10,11 @@
         </div>
         <div class="stat-card purple">
           <h3>Total orders</h3>
-          <div class="stat-number">35</div>
+          <div class="stat-number">3</div>
         </div>
         <div class="stat-card gray">
-          <div class="stat-number">$ 45,365.00</div>
+          <h3>Revenue</h3>
+          <div class="stat-number">45,365.00</div>
         </div>
       </div>
       <section class="artworks-section">
@@ -96,19 +35,27 @@
       
        
         <div *ngIf="!loading && !errorMessage && artworks.length > 0" class="artworks-grid">
-          <div class="artwork-card" *ngFor="let artwork of artworks">
+          <div class="artwork-card" *ngFor="let artwork of artworks" (click)="viewArtwork(artwork)">
             <div class="artwork-image">
-              <img [src]="'artworks/' + artwork.image" [alt]="artwork.title" />
+              <img [src]="imageURL + artwork.image" [alt]="artwork.title" />
             </div>
             <div class="artwork-info">
               <h4>{{ artwork.title }}</h4>
-              <p class="artwork-category">{{ artwork.category }}</p>
-              <p class="artwork-quantity">Quantity: {{ artwork.quantity }}</p>
+              <p class="artwork-category">{{ artwork.category_name }}</p>
+              <p class="artwork-quantity">Qty: {{ artwork.quantity }}</p>
               <p class="artwork-description">{{ artwork.description }}</p>
               <div class="artwork-footer">
-                <span class="artwork-price">${{ artwork.price }}</span>
-                <button class="delete-btn" (click)="deleteArtwork(artwork.artwork_id)">delete</button>
-                <button class="edit-btn" (click)="editArtwork(artwork.artwork_id)">Edit</button>
+                <span class="artwork-price">₹{{ artwork.price }}</span>
+                <div class="action-icons">
+                  <button class="icon-btn delete-btn" (click)="deleteArtwork(artwork.artwork_id)" title="Delete">
+                    <i class="fas fa-trash-alt text-danger"></i>
+                  </button>
+                
+                  <!-- Edit Icon Button -->
+                  <button class="icon-btn edit-btn" (click)="editArtwork(artwork.artwork_id)" title="Edit">
+                    <i class="fas fa-edit text-primary"></i>
+                  </button>
+                </div>
               </div>
             </div>
           </div>

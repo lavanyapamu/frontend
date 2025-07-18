@@ -1,169 +1,266 @@
 .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem;
-    margin-bottom: 3rem;
-  }
-  
-  .stat-card {
-    background: white;
-    padding: 1.2rem 1rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    position: relative;
-    overflow: hidden;
-    min-height: 80px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  
-  .stat-card h3 {
-    font-size: 0.75rem;
-    color: white;
-    margin-bottom: 0.5rem;
-    text-transform: capitalize;
-    font-weight: 500;
-  }
-  
-  .stat-number {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: white;
-    line-height: 1;
-  }
-  
-  .stat-card.blue {
-    background: linear-gradient(135deg, #4285f4, #5c9df5);
-  }
-  
-  .stat-card.red {
-    background: linear-gradient(135deg, #ea4335, #f06659);
-  }
-  
-  .stat-card.purple {
-    background: linear-gradient(135deg, #9c27b0, #ba68c8);
-  }
-  
-  .stat-card.gray {
-    background: linear-gradient(135deg, #78909c, #90a4ae);
-  }
-  
-  .stat-card.gray h3 {
-    display: none;
-  }
-  
-  
-  .artworks-section {
-    margin-bottom: 3rem;
-  }
-  
-  .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-  }
-  
-  .section-header h2 {
-    color: #2c3e50;
-    font-size: 1.5rem;
-  }
-  
-  .add-btn {
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background-color 0.2s;
-  }
-  
-  .add-btn:hover {
-    background: #0056b3;
-  }
-  
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.stat-card {
+  background: white;
+  padding: 1.2rem 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  position: relative;
+  overflow: hidden;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.stat-card h3 {
+  font-size: 0.75rem;
+  color: white;
+  margin-bottom: 0.5rem;
+  text-transform: capitalize;
+  font-weight: 500;
+}
+
+.stat-number {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: white;
+  line-height: 1;
+}
+
+.stat-card.blue {
+  background: linear-gradient(135deg, #4285f4, #5c9df5);
+}
+
+.stat-card.red {
+  background: linear-gradient(135deg, #ea4335, #f06659);
+}
+
+.stat-card.purple {
+  background: linear-gradient(135deg, #9c27b0, #ba68c8);
+}
+
+.stat-card.gray {
+  background: linear-gradient(135deg, #78909c, #90a4ae);
+}
+
+.stat-card.gray h3 {
+  display: none;
+}
+
+.artworks-section {
+  margin-bottom: 3rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.section-header h2 {
+  color: #2c3e50;
+  font-size: 1.5rem;
+}
+
+.add-btn {
+  background: none;
+  color: #007bff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.add-btn:hover {
+  background: #c5dcf5;
+}
+
+.artworks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.artwork-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #f0f0f0;
+  position: relative;
+}
+
+.artwork-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.artwork-image {
+  height: 220px;
+  overflow: hidden;
+  position: relative;
+}
+
+.artwork-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.artwork-card:hover .artwork-image img {
+  transform: scale(1.05);
+}
+
+.artwork-info {
+  padding: 1.5rem;
+}
+
+.artwork-info h4 {
+  color: #2c3e50;
+  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.3;
+  min-height: 1.3rem;
+}
+
+.artwork-category {
+  color: #6c757d;
+  font-size: 0.8rem;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+  background: #f8f9fa;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+.artwork-quantity {
+  color: #495057;
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem;
+  font-weight: 500;
+}
+
+.artwork-quantity::before {
+
+  margin-right: 0.25rem;
+}
+
+.artwork-description {
+  color: #6c757d;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  margin-bottom: 1.25rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.4rem;
+}
+
+.artwork-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.artwork-price {
+  font-weight: 700;
+  color: #010202;
+  font-size: 1.1rem;
+}
+
+.artwork-price::before {
+  content: "₹";
+  font-size: 0.9rem;
+  margin-right: 0.1rem;
+}
+
+.action-icons {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-btn {
+  color: #dc3545;
+}
+
+.delete-btn:hover {
+  background: rgba(220, 53, 69, 0.1);
+  transform: scale(1.1);
+}
+
+.edit-btn {
+  color: #007bff;
+}
+
+.edit-btn:hover {
+  background: rgba(0, 123, 255, 0.1);
+  transform: scale(1.1);
+}
+
+.loading-message, .error-message, .no-artworks-message {
+  text-align: center;
+  padding: 3rem;
+  color: #6c757d;
+  font-size: 1rem;
+}
+
+.error-message {
+  color: #dc3545;
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+}
+
+.no-artworks-message {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
   .artworks-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-  }
-  
-  .artwork-card {
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  
-  .artwork-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-  }
-  
-  .artwork-image {
-    height: 200px;
-    overflow: hidden;
-  }
-  
-  .artwork-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
   }
   
   .artwork-info {
     padding: 1rem;
   }
   
-  .artwork-info h4 {
-    color: #2c3e50;
-    margin-bottom: 0.5rem;
-    font-size: 1rem;
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
-  
-  .artwork-category {
-    color: #6c757d;
-    font-size: 0.875rem;
-    margin-bottom: 1rem;
-    text-transform: uppercase;
-  }
-  
-  .artwork-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .artwork-price {
-    font-weight: bold;
-    color: #2c3e50;
-  }
-  .delete-btn{
-    background: #f55c51;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.875rem;
-    transition: background-color 0.2s;
-  }
-  
-  .edit-btn {
-    background: #28a745;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.875rem;
-    transition: background-color 0.2s;
-  }
-  
-  .edit-btn:hover {
-    background: #1e7e34;
-  }
+}

@@ -1,0 +1,26 @@
+<div class="checkout-container">
+    <h2>Checkout</h2>
+  
+    <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
+      <div class="section">
+        <h3>Shipping Info</h3>
+        <input formControlName="fullName" placeholder="Full Name" class="form-control" />
+        <input formControlName="address" placeholder="Address" class="form-control" />
+        <input formControlName="phone" placeholder="Phone Number" class="form-control" />
+      </div>
+  
+      <div class="section">
+        <h3>Payment Info</h3>
+        <input formControlName="cardNumber" placeholder="Card Number" class="form-control" />
+        <input formControlName="expiry" placeholder="MM/YY" class="form-control" />
+        <input formControlName="cvv" placeholder="CVV" class="form-control" />
+      </div>
+  
+      <div class="summary">
+        <p><strong>Total: ₹{{ cartTotal }}</strong></p>
+      </div>
+  
+      <button type="submit" class="checkout-btn">Place Order</button>
+    </form>
+  </div>
+  

@@ -18,19 +18,27 @@
   
    
     <div *ngIf="!loading && !errorMessage && artworks.length > 0" class="artworks-grid">
-      <div class="artwork-card" *ngFor="let artwork of artworks">
+      <div class="artwork-card" *ngFor="let artwork of artworks" (click)="viewArtwork(artwork)" >
         <div class="artwork-image">
-          <img [src]="'artworks/' + artwork.image" [alt]="artwork.title" />
+          <img [src]="imageURL + artwork.image" [alt]="artwork.title" />
         </div>
         <div class="artwork-info">
           <h4>{{ artwork.title }}</h4>
-          <p class="artwork-category">{{ artwork.category }}</p>
-          <p class="artwork-quantity">Quantity: {{ artwork.quantity }}</p>
+          <p class="artwork-category">{{ artwork.category_name }}</p>
+          <p class="artwork-quantity">Qty: {{ artwork.quantity }}</p>
           <p class="artwork-description">{{ artwork.description }}</p>
           <div class="artwork-footer">
-            <span class="artwork-price">${{ artwork.price }}</span>
-            <button class="delete-btn" (click)="deleteArtwork(artwork.artwork_id)">delete</button>
-            <button class="edit-btn" (click)="editArtwork(artwork.artwork_id)">Edit</button>
+            <span class="artwork-price">{{ artwork.price }}</span>
+            <div class="action-icons">
+            <button class="icon-btn delete-btn" (click)="deleteArtwork(artwork.artwork_id)" title="Delete">
+              <i class="fas fa-trash-alt text-danger"></i>
+            </button>
+          
+            <!-- Edit Icon Button -->
+            <button class="icon-btn edit-btn" (click)="editArtwork(artwork.artwork_id)" title="Edit">
+              <i class="fas fa-edit text-primary"></i>
+            </button>
+          </div>
           </div>
         </div>
       </div>

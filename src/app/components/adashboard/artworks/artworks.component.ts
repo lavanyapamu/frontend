@@ -1,19 +1,8 @@
-// import { Component } from '@angular/core';
-
-// @Component({
-//   selector: 'app-artworks',
-//   imports: [],
-//   templateUrl: './artworks.component.html',
-//   styleUrl: './artworks.component.css'
-// })
-// export class ArtworksComponent {
-
-// }
 
 
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -32,6 +21,8 @@ export class ArtworksComponent implements OnInit {
   loading: boolean = true;
   errorMessage: string = '';
 
+  imageURL = "http://localhost:5000/static/uploads/"
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -47,7 +38,22 @@ export class ArtworksComponent implements OnInit {
   }
   
   fetchArtworksByArtist(id: string): void {
-    this.http.get<any[]>(`http://localhost:5000/api/artworks/artist/${id}`).subscribe({
+    const token = localStorage.getItem('access_token');
+   
+    if (!token) {
+      this.errorMessage = 'Missing token. Please login again.';
+      this.loading = false;
+      return;
+    }
+
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    this.http.get<any[]>(`http://localhost:5000/api/artworks/artist/${id}`, 
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      }
+    ).subscribe({
       next: (response) => {
         this.artworks = response;
         this.loading = false;
@@ -62,12 +68,12 @@ export class ArtworksComponent implements OnInit {
   }
 
   addartwork(): void {
-    this.router.navigate(['/addartwork']);
+    this.router.navigate(['/artistd/addartwork']);
   }
 
   
-  editArtwork(artworkId: number): void {
-    this.router.navigate(['/editartwork', artworkId]);
+  editArtwork(artwork_id: String): void {
+    this.router.navigate(['/artistd/editartwork', artwork_id]);
   } 
   
   deleteArtwork(artwork_id:string): void {
@@ -97,4 +103,15 @@ export class ArtworksComponent implements OnInit {
   get artworksCount(): number {
     return this.artworks.length;
   }
+
+  viewArtwork(artwork: any) {
+    console.log('Navigating to artwork:', artwork); // add this line
+    if (artwork&&artwork.artwork_id)
+      {
+         this.router.navigate(['/artwork-details', artwork.artwork_id]);
+      } 
+    else {
+      console.error('Artwork ID is missing or undefined');
+    }
+}
 }

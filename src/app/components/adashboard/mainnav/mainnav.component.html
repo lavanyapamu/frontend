@@ -1,26 +1,33 @@
 <header class="header">
-    <div class="header-left">
-      <h1 class="logo">ARTFLARE</h1>
-    </div>
-    <nav class="header-nav">
-      <a routerLink="/artistd/orders" routerLinkActive="active" class="nav-link" style="cursor: pointer;">Orders</a>
-      <a routerLink="/artistd/dashboard" routerLinkActive="active" class="nav-link" style="cursor: pointer;">Dashboard</a>
-      <a routerLink="/artistd/myprofile" routerLinkActive="active" class="nav-link" style="cursor: pointer;">My Profile</a>
-    </nav>
-    <div class="header-right">
-      <div class="dropdown">
-        <div class="profile-avatar">👤</div>
-        <div class="dropdown-content">
-          <a href="#" class="dropdown-item">
-            <span class="dropdown-icon">⚙️</span>
-            Settings
-          </a>
-          <hr class="dropdown-divider">
-          <a href="#" class="dropdown-item logout">
-            <span class="dropdown-icon">🚪</span>
-            Logout
-          </a>
-        </div>
+  <div class="header-left">
+    <h1 class="logo">ARTFLARE</h1>
+  </div>
+
+  <nav class="header-nav">
+    <a routerLink="/artistd/orders" routerLinkActive="active" class="nav-link">Orders</a>
+    <a routerLink="/artistd/dashboard" routerLinkActive="active" class="nav-link">Dashboard</a>
+    <a routerLink="/artistd/myprofile" routerLinkActive="active" class="nav-link">My Profile</a>
+  </nav>
+
+  <div class="header-right">
+    <div class="dropdown">
+      <div class="profile-avatar">
+        <img *ngIf="profileImageUrl; else fallback" [src]="profileImageUrl" alt="Profile" />
+        <ng-template #fallback>
+          <div class="avatar-fallback">👤</div>
+        </ng-template>
+      </div>
+      <div class="dropdown-content">
+        <!-- <a href="#" class="dropdown-item">
+          <span class="dropdown-icon">⚙️</span>
+          Settings
+        </a> -->
+        <hr class="dropdown-divider">
+        <a (click)="logout()" class="dropdown-item logout">
+          <span class="dropdown-icon">🚪</span>
+          Logout
+        </a>
       </div>
     </div>
-  </header>
+  </div>
+</header>

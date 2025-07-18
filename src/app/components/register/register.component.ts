@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';  // Import HttpClient
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-register',
@@ -23,7 +24,7 @@ export class RegisterComponent {
     isVerified: false
   };
 
-  constructor(private router: Router, private http: HttpClient) {} 
+  constructor(private router: Router, private http: HttpClient, private authService: AuthService,) {} 
 
   selectRole(role: string) {
     this.selectedRole = role;
@@ -57,8 +58,22 @@ export class RegisterComponent {
         }
       });
   }
-
+  
+  ngOnInit(): void {
+    if (this.authService.isLoggedIn()) {
+      const role = localStorage.getItem('role_id');
+      if (role === '2') {
+        this.router.navigate(['/artistd/artist'], { replaceUrl: true });
+      } else if (role === '3') {
+        this.router.navigate(['/buyerdashboard'], { replaceUrl: true });
+      } else {
+        this.router.navigate(['/main/home'], { replaceUrl: true });
+      }
+    }
+  }
   goToLogin() {
-    this.router.navigate(['/login']);
+    this.router.navigate(['/login'],  { replaceUrl: true });
   }
 }
+  
+

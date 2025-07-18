@@ -1,0 +1,185 @@
+<!-- buyer-dashboard.component.html -->
+<main class="main-content">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-item" [class.active]="currentView === 'artworks'" (click)="setActiveView('artworks')">
+        <i class="fas fa-palette sidebar-icon " style='color: #BA68C8;'></i>
+        <span class="sidebar-text">Browse Artworks</span>
+      </div>
+      <div class="sidebar-item" [class.active]="currentView === 'cart'" (click)="setActiveView('cart')">
+        <i class="fas fa-shopping-cart sidebar-icon text-primary"></i>
+        <span class="sidebar-text">Cart</span>
+        <span class="badge" *ngIf="cartItems.length > 0">{{ cartItems.length }}</span>
+      </div>
+      <div class="sidebar-item" [class.active]="currentView === 'wishlist'" (click)="setActiveView('wishlist')">
+        <i class="fas fa-heart sidebar-icon text-danger"></i>
+        <span class="sidebar-text">Wishlist</span>
+        <span class="badge" *ngIf="wishlistItems.length > 0">{{ wishlistItems.length }}</span>
+      </div>
+      <div class="sidebar-item" [class.active]="currentView === 'orders'" (click)="setActiveView('orders')">
+        <i class="fas fa-clipboard-list sidebar-icon 	text-info"></i>
+        <span class="sidebar-text">Order History</span>
+      </div>
+      <div class="sidebar-item" [class.active]="currentView === 'profile'" (click)="setActiveView('profile')">
+        <i class="fas fa-user sidebar-icon"></i>
+        <span class="sidebar-text">Profile</span>
+      </div>
+      <div class="sidebar-item logout-item" (click)="logout()">
+        <i class="fas fa-sign-out-alt sidebar-icon"></i>
+        <span class="sidebar-text">Logout</span>
+      </div>
+    </aside>
+    
+  
+    <!-- Main Content Area -->
+    <div class="dashboard-content">
+      <!-- Browse Artworks View -->
+      <div *ngIf="currentView === 'artworks'" class="content-section">
+        <div class="section-header">
+          <h2>Browse Artworks</h2>
+          <div class="search-filters">
+            <!-- Add search and filter controls here -->
+          </div>
+        </div>
+  
+        <div *ngIf="loading" class="loading-message">Loading artworks...</div>
+        <div *ngIf="!loading && errorMessage" class="error-message">{{ errorMessage }}</div>
+        <div *ngIf="!loading && !errorMessage && artworks.length === 0" class="no-artworks-message">
+          No artworks available.
+        </div>
+  
+        <div *ngIf="!loading && !errorMessage && artworks.length > 0" class="artworks-grid">
+          <div class="artwork-card" *ngFor="let artwork of artworks">
+            <div class="artwork-image">
+              <img [src]="imageURL + artwork.image" [alt]="artwork.title" />
+              <div class="artwork-overlay">
+                <button 
+                  class="action-btn wishlist-btn" 
+                  [class.active]="isInWishlist(artwork.artwork_id)"
+                  (click)="addToWishlist(artwork)"
+                  [disabled]="isInWishlist(artwork.artwork_id)">
+                  <span class="icon"><i class="fas fa-heart"></i></span>
+                </button>
+              </div>
+            </div>
+            <div class="artwork-info">
+              <h4>{{ artwork.title }}</h4>
+              <p class="artwork-category">{{ artwork.category }}</p>
+              <p class="artwork-description">{{ artwork.description }}</p>
+              <div class="artwork-footer">
+                <span class="artwork-price">${{ artwork.price }}</span>
+                <button 
+                  class="add-to-cart-btn" 
+                  (click)="addToCart(artwork)"
+                  [disabled]="isInCart(artwork.artwork_id)">
+                  {{ isInCart(artwork.artwork_id) ? 'In Cart' : 'Add to Cart' }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Cart View -->
+      <div *ngIf="currentView === 'cart'" class="content-section">
+        <div class="section-header">
+          <h2>Shopping Cart</h2>
+          <button class="clear-cart-btn" (click)="clearCart()" *ngIf="cartItems.length > 0">
+            Clear Cart
+          </button>
+        </div>
+  
+        <div *ngIf="cartItems.length === 0" class="empty-message">
+          <div class="empty-icon">🛒</div>
+          <h3>Your cart is empty</h3>
+          <p>Browse artworks and add items to your cart</p>
+          <button class="browse-btn" (click)="setActiveView('artworks')">Browse Artworks</button>
+        </div>
+  
+        <div *ngIf="cartItems.length > 0" class="cart-items">
+          <div class="cart-item" *ngFor="let item of cartItems">
+            <div class="item-image">
+              <img [src]="imageURL + item.artwork?.image" [alt]="item.artwork?.title" />
+            </div>
+            <div class="item-details">
+              <h4>{{ item.artwork?.title }}</h4>
+              <p class="item-category">{{ item.artwork?.category }}</p>
+              <div class="item-price">
+                <span class="quantity">Qty: {{ item.quantity }}</span>
+                <span class="price">${{ item.price }}</span>
+              </div>
+            </div>
+            <div class="item-actions">
+              <button class="remove-btn" (click)="removeFromCart(item.cart_id)">
+                Remove
+              </button>
+            </div>
+          </div>
+  
+          <div class="cart-summary">
+            <div class="total-section">
+              <h3>Total: ${{ getCartTotal() }}</h3>
+              <button class="checkout-btn" (click)="goToCheckout()">Proceed to Checkout</button>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Wishlist View -->
+      <div *ngIf="currentView === 'wishlist'" class="content-section">
+        <div class="section-header">
+          <h2>My Wishlist</h2>
+        </div>
+  
+        <div *ngIf="wishlistItems.length === 0" class="empty-message">
+          <div class="empty-icon">💖</div>
+          <h3>Your wishlist is empty</h3>
+          <p>Save artworks you love for later</p>
+          <button class="browse-btn" (click)="setActiveView('artworks')">Browse Artworks</button>
+        </div>
+  
+        <div *ngIf="wishlistItems.length > 0" class="wishlist-items">
+          <div class="wishlist-item" *ngFor="let item of wishlistItems">
+            <div class="item-image">
+              <img [src]="imageURL + item.artwork?.image" [alt]="item.artwork?.title" />
+            </div>
+            <div class="item-details">
+              <h4>{{ item.artwork?.title }}</h4>
+              <p class="item-category">{{ item.artwork?.category }}</p>
+              <span class="item-price">${{ item.price }}</span>
+            </div>
+            <div class="item-actions">
+              <button class="move-to-cart-btn" (click)="moveToCart(item)">
+                Add to Cart
+              </button>
+              <button class="remove-btn" (click)="removeFromWishlist(item.wishlist_id)">
+                Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Orders View -->
+      <div *ngIf="currentView === 'orders'" class="content-section">
+        <div class="section-header">
+          <h2>Order History</h2>
+        </div>
+        <div class="coming-soon">
+          <h3>Coming Soon</h3>
+          <p>Order history functionality will be available soon.</p>
+        </div>
+      </div>
+  
+      <!-- Profile View -->
+      <div *ngIf="currentView === 'profile'" class="content-section">
+        <div class="section-header">
+          <h2>Profile Settings</h2>
+        </div>
+        <div class="coming-soon">
+          <h3>Coming Soon</h3>
+          <p>Profile settings will be available soon.</p>
+        </div>
+      </div>
+    </div>
+  </main>
