@@ -1,1 +1,32 @@
-<p>sidenav works!</p>
+<aside class="sidebar">
+  <div class="sidebar-item" [routerLink]="['/buyerdashboard/artworksb']" routerLinkActive="active">
+    <i class="fas fa-palette sidebar-icon"></i>
+    <span class="sidebar-text">Artworks</span>
+  </div>
+  
+  <div class="sidebar-item" [routerLink]="['/buyerdashboard/cart']" routerLinkActive="active">
+    <i class="fas fa-shopping-cart sidebar-icon"></i>
+    <span class="sidebar-text">Cart</span>
+  </div>
+  
+  <div class="sidebar-item" routerLink="/buyerdashboard/wishlist" routerLinkActive="active">
+    <i class="fas fa-heart sidebar-icon"></i>
+    <span class="sidebar-text">Wishlist</span>
+  </div>
+  
+  <div class="sidebar-item" routerLink="/buyerdashboard/orders" routerLinkActive="active">
+    <i class="fas fa-box sidebar-icon"></i>
+    <span class="sidebar-text">Orders</span>
+  </div>
+  
+  <div class="sidebar-item" routerLink="/buyerdashboard/profile" routerLinkActive="active">
+    <i class="fas fa-user sidebar-icon"></i>
+    <span class="sidebar-text">Profile</span>
+  </div>
+  
+  <div class="sidebar-item logout-item" (click)="logout()" style="cursor: pointer;">
+    <i class="fas fa-sign-out-alt sidebar-icon text-danger"></i>
+    <span class="sidebar-text text-danger fw-semibold">Logout</span>
+  </div>
+  
+  </aside>

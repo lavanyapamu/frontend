@@ -1,0 +1,34 @@
+<!-- Wishlist View -->
+<div class="content-section">
+  <div class="section-header">
+    <h2>My Wishlist</h2>
+  </div>
+
+  <div *ngIf="wishlistItems.length === 0" class="empty-message">
+    <div class="empty-icon">💖</div>
+    <h3>Your wishlist is empty</h3>
+    <p>Save artworks you love for later</p>
+    <button class="browse-btn"  (click)="goToArtworks()">Browse Artworks</button>
+  </div>
+
+  <div *ngIf="wishlistItems.length > 0" class="wishlist-items">
+    <div class="wishlist-item" *ngFor="let item of wishlistItems">
+      <div class="item-image">
+        <img [src]="imageURL + item.artwork?.image" [alt]="item.artwork?.title" />
+      </div>
+      <div class="item-details">
+        <h4>{{ item.artwork?.title }}</h4>
+        <p class="item-category">{{ item.artwork?.category }}</p>
+        <span class="item-price">${{ item.price }}</span>
+      </div>
+      <div class="item-actions">
+        <button class="move-to-cart-btn" (click)="moveToCart(item)">
+          Add to Cart
+        </button>
+        <button class="remove-btn" (click)="removeFromWishlist(item.wishlist_id)">
+          Remove
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

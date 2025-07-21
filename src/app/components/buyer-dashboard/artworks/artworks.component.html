@@ -1,0 +1,47 @@
+<!-- Browse Artworks View -->
+<div class="content-section">
+    <div class="section-header">
+      <h2>Browse Artworks</h2>
+      <div class="search-filters">
+        <!-- Add search and filter controls here -->
+      </div>
+    </div>
+  
+    <div *ngIf="loading" class="loading-message">Loading artworks...</div>
+    <div *ngIf="!loading && errorMessage" class="error-message">{{ errorMessage }}</div>
+    <div *ngIf="!loading && !errorMessage && artworks.length === 0" class="no-artworks-message">
+      No artworks available.
+    </div>
+  
+    <div *ngIf="!loading && !errorMessage && artworks.length > 0" class="artworks-grid">
+      <div class="artwork-card" *ngFor="let artwork of artworks">
+        <div class="artwork-image">
+          <img [src]="artwork.image ? imageURL + artwork.image : 'assets/default-image.png'" alt="Artwork" />
+
+          <div class="artwork-overlay">
+            <button 
+              class="action-btn wishlist-btn" 
+              [class.active]="isInWishlist(artwork.artwork_id)"
+              (click)="addToWishlist(artwork)"
+              [disabled]="isInWishlist(artwork.artwork_id)">
+              <span class="icon"><i class="fas fa-heart"></i></span>
+            </button>
+          </div>
+        </div>
+        <div class="artwork-info">
+          <h4>{{ artwork.title }}</h4>
+          <p class="artwork-category">{{ artwork.category }}</p>
+          <p class="artwork-description">{{ artwork.description }}</p>
+          <div class="artwork-footer">
+            <span class="artwork-price">${{ artwork.price }}</span>
+            <button 
+              class="add-to-cart-btn" 
+              (click)="addToCart(artwork)"
+              [disabled]="isInCart(artwork.artwork_id)">
+              {{ isInCart(artwork.artwork_id) ? 'In Cart' : 'Add to Cart' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
