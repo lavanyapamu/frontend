@@ -1,0 +1,49 @@
+<div class="artwork-detail-container">
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Loading artwork details...</p>
+  </div>
+
+  <div *ngIf="error" class="error-container">
+    <div class="error-icon">⚠️</div>
+    <p>{{ error }}</p>
+  </div>
+
+  <div *ngIf="artwork && !isLoading" class="main-content">
+    <div class="image-section">
+      <div class="image-container">
+        <img [src]="imageURL + artwork.image" [alt]="artwork.title" />
+      </div>
+    </div>
+
+    <div class="details-section">
+      <div class="artwork-header">
+        <h2 class="artwork-title">{{ artwork.title }}</h2>
+        <div class="artwork-meta">
+          <span>Category: {{ artwork.category_name }}</span>
+          <span>Artist: {{ artwork.name }}</span>
+        </div>
+      </div>
+
+      <div class="price-inventory">
+        <div class="price-section">
+          <label>Price</label>
+          <div class="price">₹{{ artwork.price }}</div>
+        </div>
+        <div class="inventory-section">
+          <div class="inventory-item">
+            <label>Quantity</label>
+            <div class="value">{{ artwork.quantity }}</div>
+          </div>
+        
+        </div>
+      </div>
+
+      <div class="description-section">
+        <label>Description</label>
+        <div class="description">{{ artwork.description }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -1,47 +1,161 @@
 <!-- Browse Artworks View -->
 <div class="content-section">
-    <div class="section-header">
-      <h2>Browse Artworks</h2>
-      <div class="search-filters">
-        <!-- Add search and filter controls here -->
+  <div class="section-header">
+    <h2>Browse Artworks</h2>
+    
+    <!-- Search Bar -->
+    <div class="search-container">
+      <input 
+        type="text" 
+        class="search-input" 
+        placeholder="Search by artwork name, artist, or category..."
+        [(ngModel)]="searchTerm"
+        (input)="onSearchChange()"
+      />
+      <i class="fas fa-search search-icon"></i>
+    </div>
+  </div>
+
+  <!-- Filters and Sort Section -->
+  <div class="filters-section">
+    <div class="filters-row">
+      <!-- Category Filter -->
+      <div class="filter-group">
+        <label for="category">Category:</label>
+        <select id="category" [(ngModel)]="selectedCategory" (change)="applyFilters()">
+          <option value="">All Categories</option>
+          <option value="digital">Digital</option>
+          <option value="painting">Painting</option>
+          <option value="sculpture">Sculpture</option>
+          <option value="photography">Photography</option>
+          <option value="drawing">Drawing</option>
+        </select>
+      </div>
+
+      <!-- Style Filter -->
+      <div class="filter-group">
+        <label for="style">Style:</label>
+        <select id="style" [(ngModel)]="selectedStyle" (change)="applyFilters()">
+          <option value="">All Styles</option>
+          <option value="abstract">Abstract</option>
+          <option value="realism">Realism</option>
+          <option value="impressionism">Impressionism</option>
+          <option value="modern">Modern</option>
+          <option value="contemporary">Contemporary</option>
+        </select>
+      </div>
+
+      <!-- Price Range Filter -->
+      <div class="filter-group price-range">
+        <label>Price Range:</label>
+        <div class="price-inputs">
+          <input 
+            type="number" 
+            placeholder="Min" 
+            [(ngModel)]="minPrice" 
+            (input)="applyFilters()"
+            class="price-input"
+          />
+          <span>-</span>
+          <input 
+            type="number" 
+            placeholder="Max" 
+            [(ngModel)]="maxPrice" 
+            (input)="applyFilters()"
+            class="price-input"
+          />
+        </div>
+      </div>
+
+      <!-- Sort Options -->
+      <div class="filter-group">
+        <label for="sort">Sort by:</label>
+        <select id="sort" [(ngModel)]="sortBy" (change)="applyFilters()">
+          <option value="">Default</option>
+          <option value="newest">Newest First</option>
+          <option value="price_asc">Price: Low to High</option>
+          <option value="price_desc">Price: High to Low</option>
+          <option value="popular">Most Popular</option>
+        </select>
+      </div>
+
+      <!-- Clear Filters Button -->
+      <div class="filter-group">
+        <button class="clear-filters-btn" (click)="clearFilters()">
+          <i class="fas fa-times"></i> Clear All
+        </button>
       </div>
     </div>
-  
-    <div *ngIf="loading" class="loading-message">Loading artworks...</div>
-    <div *ngIf="!loading && errorMessage" class="error-message">{{ errorMessage }}</div>
-    <div *ngIf="!loading && !errorMessage && artworks.length === 0" class="no-artworks-message">
-      No artworks available.
-    </div>
-  
-    <div *ngIf="!loading && !errorMessage && artworks.length > 0" class="artworks-grid">
-      <div class="artwork-card" *ngFor="let artwork of artworks">
-        <div class="artwork-image">
-          <img [src]="artwork.image ? imageURL + artwork.image : 'assets/default-image.png'" alt="Artwork" />
 
-          <div class="artwork-overlay">
-            <button 
-              class="action-btn wishlist-btn" 
-              [class.active]="isInWishlist(artwork.artwork_id)"
-              (click)="addToWishlist(artwork)"
-              [disabled]="isInWishlist(artwork.artwork_id)">
-              <span class="icon"><i class="fas fa-heart"></i></span>
-            </button>
-          </div>
+    <!-- Active Filters Display -->
+    <div class="active-filters" *ngIf="hasActiveFilters()">
+      <span class="filter-label">Active Filters:</span>
+      <span class="filter-tag" *ngIf="searchTerm">
+        Search: "{{ searchTerm }}" 
+        <i class="fas fa-times" (click)="clearSearch()"></i>
+      </span>
+      <span class="filter-tag" *ngIf="selectedCategory">
+        Category: {{ selectedCategory | titlecase }} 
+        <i class="fas fa-times" (click)="clearCategory()"></i>
+      </span>
+      <span class="filter-tag" *ngIf="selectedStyle">
+        Style: {{ selectedStyle | titlecase }} 
+        <i class="fas fa-times" (click)="clearStyle()"></i>
+      </span>
+      <span class="filter-tag" *ngIf="minPrice || maxPrice">
+        Price: ${{ minPrice || 0 }} - ${{ maxPrice || '∞' }} 
+        <i class="fas fa-times" (click)="clearPriceRange()"></i>
+      </span>
+      <span class="filter-tag" *ngIf="sortBy">
+        Sort: {{ getSortLabel(sortBy) }} 
+        <i class="fas fa-times" (click)="clearSort()"></i>
+      </span>
+    </div>
+
+    <!-- Results Count -->
+    <div class="results-info" *ngIf="!loading">
+      <span>{{ filteredArtworks.length }} artwork(s) found</span>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading-message">Loading artworks...</div>
+  <div *ngIf="!loading && errorMessage" class="error-message">{{ errorMessage }}</div>
+  <div *ngIf="!loading && !errorMessage && filteredArtworks.length === 0" class="no-artworks-message">
+    No artworks found matching your criteria.
+  </div>
+
+  <div *ngIf="!loading && !errorMessage && filteredArtworks.length > 0" class="artworks-grid">
+    <div class="artwork-card" *ngFor="let artwork of filteredArtworks" (click)="view(artwork)">
+      <div class="artwork-image">
+        <img [src]="artwork.image ? imageURL + artwork.image : 'assets/default-image.png'" alt="Artwork" />
+        <div class="artwork-overlay">
+          <button
+            class="action-btn wishlist-btn"
+            [class.active]="isInWishlist(artwork.artwork_id)"
+            (click)="addToWishlist(artwork)"
+            [disabled]="isInWishlist(artwork.artwork_id)">
+            <span class="icon"><i class="fas fa-heart"></i></span>
+          </button>
         </div>
-        <div class="artwork-info">
-          <h4>{{ artwork.title }}</h4>
-          <p class="artwork-category">{{ artwork.category }}</p>
-          <p class="artwork-description">{{ artwork.description }}</p>
-          <div class="artwork-footer">
-            <span class="artwork-price">${{ artwork.price }}</span>
-            <button 
-              class="add-to-cart-btn" 
-              (click)="addToCart(artwork)"
-              [disabled]="isInCart(artwork.artwork_id)">
-              {{ isInCart(artwork.artwork_id) ? 'In Cart' : 'Add to Cart' }}
-            </button>
-          </div>
+      </div>
+      <div class="artwork-info">
+        <h4>{{ artwork.title }}</h4>
+        <p class="artwork-category">{{ artwork.category_name | titlecase }}</p>
+        <p class="artwork-style">{{ artwork.style | titlecase }}</p>
+        <p class="artwork-description">{{ artwork.description }}</p>
+        <!-- <div class="artwork-stats">
+          <span class="sales-count">{{ artwork.sales_count }} sold</span>
+        </div> -->
+        <div class="artwork-footer">
+          <span class="artwork-price">${{ artwork.price }}</span>
+          <button
+            class="add-to-cart-btn"
+            (click)="addToCart(artwork)"
+            [disabled]="isInCart(artwork.artwork_id)">
+            {{ isInCart(artwork.artwork_id) ? 'In Cart' : 'Add to Cart' }}
+          </button>
         </div>
       </div>
     </div>
   </div>
+</div>
