@@ -24,7 +24,7 @@
           <p class="item-category">{{ item.artwork?.category }}</p>
           <div class="item-price">
             <span class="quantity">Qty: {{ item.quantity }}</span>
-            <span class="price">${{ item.price }}</span>
+            <span class="price">₹{{ item.price }}</span>
           </div>
         </div>
         <div class="item-actions">
@@ -36,7 +36,7 @@
 
       <div class="cart-summary">
         <div class="total-section">
-          <h3>Total: ${{ getCartTotal() }}</h3>
+          <h3>Total: ₹{{ getCartTotal() }}</h3>
           <button class="checkout-btn" (click)="goToCheckout()">Proceed to Checkout</button>
         </div>
       </div>

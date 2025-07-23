@@ -19,7 +19,7 @@
       <div class="item-details">
         <h4>{{ item.artwork?.title }}</h4>
         <p class="item-category">{{ item.artwork?.category }}</p>
-        <span class="item-price">${{ item.price }}</span>
+        <span class="item-price">₹{{ item.price }}</span>
       </div>
       <div class="item-actions">
         <button class="move-to-cart-btn" (click)="moveToCart(item)">
