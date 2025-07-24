@@ -132,8 +132,8 @@
           <button
             class="action-btn wishlist-btn"
             [class.active]="isInWishlist(artwork.artwork_id)"
-            (click)="addToWishlist(artwork)"
-            [disabled]="isInWishlist(artwork.artwork_id)">
+            (click)="toggleWishlist(artwork); $event.stopPropagation()"
+            >
             <span class="icon"><i class="fas fa-heart"></i></span>
           </button>
         </div>
@@ -150,7 +150,7 @@
           <span class="artwork-price">${{ artwork.price }}</span>
           <button
             class="add-to-cart-btn"
-            (click)="addToCart(artwork)"
+            (click)="addToCart(artwork);  $event.stopPropagation()"
             >
             Add to Cart
           </button>

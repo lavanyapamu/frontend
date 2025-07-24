@@ -309,5 +309,26 @@ export class BuyerArtworksComponent {
       console.error('Artwork ID is missing or undefined');
     }
   }
+
+  toggleWishlist(artwork: any): void {
+    if (this.isInWishlist(artwork.artwork_id)) {
+      const item = this.wishlistItems.find(w => w.artwork_id === artwork.artwork_id);
+      if (item) {
+        const token = localStorage.getItem('access_token');
+        const headers = { Authorization: `Bearer ${token}` };
+        this.http.delete(`http://localhost:5000/api/wishlist/${item.wishlist_id}`, { headers }).subscribe({
+          next: () => {
+            this.loadWishlistItems(); // Refresh UI
+          },
+          error: (error) => {
+            console.error('Failed to remove from wishlist:', error);
+          }
+        });
+      }
+    } else {
+      this.addToWishlist(artwork);
+    }
+  }
+  
   
 }

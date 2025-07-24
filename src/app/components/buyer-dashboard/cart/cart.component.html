@@ -23,9 +23,18 @@
           <h4>{{ item.artwork?.title }}</h4>
           <p class="item-category">{{ item.artwork?.category }}</p>
           <div class="item-price">
-            <span class="quantity">Qty: {{ item.quantity }}</span>
+            <div class="quantity-control">
+              <button class="qty-btn" (click)="decreaseQuantity(item)">
+                <i class="fas fa-minus"></i>
+              </button>
+              <span class="quantity">{{ item.quantity }}</span>
+              <button class="qty-btn" (click)="increaseQuantity(item)">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
             <span class="price">₹{{ item.price }}</span>
           </div>
+          
         </div>
         <div class="item-actions">
           <button class="remove-btn" (click)="removeFromCart(item.cart_id)">
