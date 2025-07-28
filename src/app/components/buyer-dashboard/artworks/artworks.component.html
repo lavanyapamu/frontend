@@ -147,7 +147,7 @@
           <span class="sales-count">{{ artwork.sales_count }} sold</span>
         </div> -->
         <div class="artwork-footer">
-          <span class="artwork-price">${{ artwork.price }}</span>
+          <span class="artwork-price">{{ artwork.price | currency:'INR':'symbol' }}</span>
           <button
             class="add-to-cart-btn"
             (click)="addToCart(artwork);  $event.stopPropagation()"
