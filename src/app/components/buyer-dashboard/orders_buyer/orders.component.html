@@ -1,0 +1,236 @@
+<!-- Orders List View -->
+<div class="orders-container" *ngIf="!showOrderDetails">
+  <div class="orders-header">
+    <h2 class="orders-title">MY ORDERS</h2>
+    
+    <div class="orders-controls">
+      <div class="items-count">
+        {{ getTotalItems() }} Item(s)
+      </div>
+      <div class="items-per-page">
+        <label>SHOW:</label>
+        <select [(ngModel)]="itemsPerPage" (change)="onItemsPerPageChange()" class="items-select">
+          <option *ngFor="let count of availableItemsPerPage" [value]="count">{{ count }}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Loading your orders...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="error-container">
+    <div class="error-message">
+      <i class="error-icon">⚠️</i>
+      <p>{{ error }}</p>
+      <button (click)="loadOrders()" class="retry-btn">Try Again</button>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && !error && orders.length === 0" class="empty-state">
+    <div class="empty-message">
+      <i class="empty-icon">📦</i>
+      <h3>No Orders Found</h3>
+      <p>You haven't placed any orders yet.</p>
+      <button (click)="router.navigate(['/artworks'])" class="shop-now-btn">Start Shopping</button>
+    </div>
+  </div>
+
+  <!-- Orders Table -->
+  <div *ngIf="!isLoading && !error && orders.length > 0" class="orders-table-container">
+    <table class="orders-table">
+      <thead>
+        <tr>
+          <th>ORDER #</th>
+          <th>DATE</th>
+          <th>SHIP TO</th>
+          <th>ORDER TOTAL</th>
+          <th>ORDER STATUS</th>
+          <th>ACTION</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let order of orders" class="order-row">
+          <td class="order-number">
+            <span class="order-id">{{ getOrderNumber(order.order_id) }}</span>
+          </td>
+          <td class="order-date">
+            {{ formatDate(order.created_at) }}
+          </td>
+          <td class="ship-to">
+            <span class="customer-name">
+              {{ order.payment?.full_name || 'N/A' }}
+            </span>
+          </td>
+          <td class="order-total">
+            {{ formatCurrency(order.total_price) }}
+          </td>
+          <td class="order-status">
+            <span [class]="'status-badge ' + getStatusClass(order.status)">
+              {{ getStatusLabel(order.status) }}
+            </span>
+          </td>
+          <td class="order-actions">
+            <button 
+              (click)="viewOrderDetails(order.order_id)" 
+              class="view-order-btn">
+              VIEW ORDER
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Footer with item count -->
+  <div *ngIf="!isLoading && orders.length > 0" class="orders-footer">
+    <div class="footer-info">
+      <span class="items-count">{{ getTotalItems() }} Item(s)</span>
+      <div class="items-per-page">
+        <label>SHOW:</label>
+        <select [(ngModel)]="itemsPerPage" (change)="onItemsPerPageChange()" class="items-select">
+          <option *ngFor="let count of availableItemsPerPage" [value]="count">{{ count }}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Order Details Modal -->
+<div class="order-details-overlay" *ngIf="showOrderDetails" (click)="closeOrderDetails()">
+  <div class="order-details-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div class="order-info">
+        <h2>ORDER {{ getOrderNumber(selectedOrder?.order_id || '') }} - {{ getStatusLabel(selectedOrder?.status || '') }}</h2>
+        <p class="print-date">Print Date: {{ printDate }}</p>
+
+      </div>
+      <button class="close-btn" (click)="closeOrderDetails()">×</button>
+    </div>
+
+    <div class="modal-content" *ngIf="selectedOrder">
+      <!-- Order Information Section -->
+      <div class="order-sections">
+        <!-- Shipping Address -->
+        <div class="info-section">
+          <h3>SHIPPING ADDRESS</h3>
+          <div class="address-info" *ngIf="selectedOrder.payment">
+            <p><strong>{{ selectedOrder.payment.full_name}}</strong></p>
+            <p>{{ selectedOrder.payment.city }}, {{ selectedOrder.payment.state }}</p>
+            <p>{{ selectedOrder.payment.country }} - {{ selectedOrder.payment.pincode }}</p>
+            <p>Phone: {{ selectedOrder.payment.phone_number }}</p>
+          </div>
+        </div>
+
+        <!-- Billing Address -->
+        <div class="info-section">
+          <h3>BILLING ADDRESS</h3>
+          <div class="address-info" *ngIf="selectedOrder.payment">
+            <p><strong>{{ selectedOrder.payment.full_name }}</strong></p>
+            <p>{{ selectedOrder.payment.city }}, {{ selectedOrder.payment.state }}</p>
+            <p>{{ selectedOrder.payment.country }} - {{ selectedOrder.payment.pincode }}</p>
+            <p>Phone: {{ selectedOrder.payment.phone_number }}</p>
+          </div>
+        </div>
+
+        <!-- Payment Method -->
+        <div class="info-section">
+          <h3>PAYMENT METHOD</h3>
+          <div class="payment-info" *ngIf="selectedOrder.payment">
+            <p><strong>{{ selectedOrder.payment.payment_method.toUpperCase() }}
+            </strong></p>
+            <p *ngIf="selectedOrder.payment.upi_id">UPI ID: {{ selectedOrder.payment.upi_id }}</p>
+          </div>
+        </div>
+
+        <!-- Shipping Method -->
+<div class="info-section">
+  <h3>SHIPPING METHOD</h3>
+  <div class="shipping-info">
+    <p><strong>Free Shipping</strong></p>
+    <p>Standard Delivery</p>
+
+    <!-- ✅ Guarded version with "as fee" -->
+    <ng-container *ngIf="selectedOrder?.payment?.shipping_fee as fee">
+      <p *ngIf="fee > 0">
+        Fee: {{ formatCurrency(fee) }}
+      </p>
+    </ng-container>
+  </div>
+</div>
+
+      <!-- Items Ordered Section -->
+      <div class="items-section">
+        <h3>ITEMS ORDERED</h3>
+        <table class="items-table">
+          <thead>
+            <tr>
+              <th>PRODUCT</th>
+              <th>PRICE</th>
+              <th>QTY</th>
+              <th>SUBTOTAL</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of selectedOrder.order_items  || selectedOrder?.items|| []" class="item-row">
+
+              <td class="product-info">
+                <div class="product-details">
+                  <img 
+                      [src]="getImageUrl(item.artwork?.image)" 
+                      [alt]="item.artwork?.title || 'Artwork'"
+                      class="product-image"
+                      (error)="onImageError($event)"
+                    >
+                  <div class="product-text">
+                    <p class="product-name">{{ item.artwork?.title || 'Unknown Artwork' }}</p>
+                 
+                  </div>
+                </div>
+              </td>
+              <td class="item-price">{{ formatCurrency(item.price) }}</td>
+              <td class="item-quantity">{{ item.quantity }}</td>
+              <td class="item-subtotal">{{ formatCurrency(item.price * item.quantity) }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+       <!-- Order Summary -->
+<div class="order-summary">
+  <div class="summary-row" *ngIf="selectedOrder?.payment?.subtotal as subtotal">
+    <span>Subtotal:</span>
+    <span>{{ formatCurrency(subtotal || 0) }}</span>
+  </div>
+
+  <div class="summary-row" *ngIf="selectedOrder?.payment?.shipping_fee as shippingFee">
+    <span>Shipping & Handling:</span>
+    <span>{{ formatCurrency(shippingFee || 0) }}</span>
+  </div>
+
+  <div class="summary-row total-row">
+    <span><strong>Total:</strong></span>
+    <span><strong>{{ formatCurrency(selectedOrder.total_price || 0) }}</strong>
+    </span>
+  </div>
+</div>
+
+      <!-- Action Buttons -->
+      <div class="order-actions-section">
+        <button (click)="printOrder()" class="action-btn print-btn">
+          🖨️ Print Order
+        </button>
+        <button (click)="trackOrder(selectedOrder.order_id)" class="action-btn track-btn">
+          📦 Track Order
+        </button>
+        <button (click)="reorder(selectedOrder.order_id)" class="action-btn reorder-btn">
+          🔄 Reorder
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
