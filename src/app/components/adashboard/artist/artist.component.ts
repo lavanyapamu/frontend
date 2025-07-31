@@ -119,6 +119,9 @@ export class ArtistComponent implements OnInit {
   get artworksCount(): number {
     return this.artworks.length;
   }
+  // get earnings():number{
+  //   return this.artworks.earnings;
+  // }
   viewArtwork(artwork: any) {
     console.log('Navigating to artwork:', artwork); // add this line
     if (artwork&&artwork.artwork_id)

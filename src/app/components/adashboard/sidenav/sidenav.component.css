@@ -1,7 +1,7 @@
 .main-content {
   display: flex;
-  min-height: calc(100vh - 80px);
-  position:fixed
+  /* min-height: calc(100vh - 80px); */
+  /* position:fixed */
 }
 
 .sidebar {
