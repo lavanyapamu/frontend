@@ -1,12 +1,13 @@
-/* Login Page Styles */
+Login Page Styles
 .login-page {
    
     min-height: 100vh;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
   }
   
   .container-fluid {
     padding: 2rem 1rem;
+    background-color:white;
   }
   
   .custom-gap {
@@ -16,16 +17,16 @@
     flex-wrap: wrap;
   }
   
-  .login-card {
-   
+ .login-card {
     backdrop-filter: blur(10px);
-    border-radius: 20px;
+    border-radius: 12px;
     padding: 3rem;
-
+    background-color: white;
     width: 100%;
     max-width: 450px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* soft shadow */
+}
+
   
  
   
@@ -44,12 +45,12 @@
   }
   
   .form-control {
-    border: 2px solid #e1e5e9;
+    /* border: 2px solid #e1e5e9;
     border-radius: 12px;
     padding: 0.875rem 1rem;
     font-size: 1rem;
     transition: all 0.3s ease;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.9); */
   }
   
   .form-control:focus {
@@ -64,31 +65,31 @@
     font-size: 0.95rem;
   }
   
-  .input-group {
+  /* .input-group {
     position: relative;
   }
-  
-  .input-group .btn {
+   */
+  /* .input-group .btn {
     border-radius: 0 12px 12px 0;
     border: 2px solid #e1e5e9;
     border-left: none;
     background: rgba(248, 249, 250, 0.9);
     transition: all 0.3s ease;
-  }
+  } */
   
   .input-group .btn:hover {
     background: rgba(233, 236, 239, 0.9);
     border-color: #2A4178;
   }
   
-  .input-group .form-control {
+  /* .input-group .form-control {
     border-radius: 12px 0 0 12px;
-  }
+  } */
   
   .input-group .form-control:focus + .btn {
     border-color: #2A4178;
   }
-  
+/*   
   .btn-primary {
     background: linear-gradient(135deg, #4b73d1 0%, #6182d1 100%);
     border: none;
@@ -104,12 +105,12 @@
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(142, 158, 194, 0.4);
     background: linear-gradient(135deg, #7995e2 0%, #7d99d8 100%);
-  }
+  } */
   
-  .btn-primary:active {
+  /* .btn-primary:active {
     transform: translateY(0);
   }
-  
+   */
   .btn-link {
     color: #2A4178;
     text-decoration: none;
@@ -144,7 +145,7 @@
     border-left: 4px solid #dc3545;
   }
   
-  /* Image Container Styles */
+
   .custom-gap > div:last-child {
     display: flex;
     align-items: center;
@@ -163,8 +164,8 @@
     max-height: 500px;
   }
 
-  
-  /* Responsive Design */
+
+
   @media (max-width: 1024px) {
     .custom-gap {
       gap: 3rem;
@@ -236,7 +237,7 @@
     }
   }
   
-  /* Animation for form inputs */
+
   @keyframes fadeInUp {
     from {
       opacity: 0;
@@ -256,20 +257,20 @@
   .login-card > *:nth-child(2) { animation-delay: 0.2s; }
   .login-card > *:nth-child(3) { animation-delay: 0.3s; }
   
-  /* Loading state for button */
+
   .btn-primary:disabled {
     opacity: 0.6;
     cursor: not-allowed;
     transform: none;
   }
   
-  /* Focus styles for accessibility */
+
   .form-control:focus,
   .btn:focus {
     outline: none;
   }
   
-  /* Smooth transitions for all interactive elements */
+ 
   * {
     transition: all 0.3s ease;
   }

@@ -5,6 +5,13 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+interface Order {
+  orderId: string;
+  artwork: string;
+  customer: string;
+  quantity: number;
+  status: string;
+}
 @Component({
   selector: 'app-artist',
   standalone: true,
@@ -21,37 +28,8 @@ export class ArtistComponent implements OnInit {
   errorMessage: string = '';
 
   imageURL = "http://localhost:5000/static/uploads/"
-  recentOrders = [
-    {
-      id: 'ORD-001',
-      artwork: 'Abstract Harmony',
-      customer: 'John Smith',
-      quantity: 1,
-      status: 'Delivered'
-    },
-    {
-      id: 'ORD-002',
-      artwork: 'Mountain Serenity',
-      customer: 'Sarah Johnson',
-      quantity: 1,
-      status: 'Pending'
-    },
-    {
-      id: 'ORD-003',
-      artwork: 'Urban Dreams',
-      customer: 'Mike Davis',
-      quantity: 2,
-      status: 'Delivered'
-    },
-    {
-      id: 'ORD-004',
-      artwork: 'Ocean Waves',
-      customer: 'Emily Brown',
-      quantity: 1,
-      status: 'Pending'
-    }
-  ];
 
+  recentOrders: any[] = [];
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -64,6 +42,16 @@ export class ArtistComponent implements OnInit {
     this.artist_id = localStorage.getItem('user_id') || '';
     this.fetchArtworksByArtist(this.artist_id);
     console.log('🧑‍🎨 artistId:', this.artist_id);
+
+    
+     this.http.get<Order[]>('http://localhost:5000/api/orders/all?limit=2').subscribe({
+      next: (data) => {
+        this.recentOrders = data;
+      },
+      error: (err) => {
+        console.error('Error fetching recent orders:', err);
+      }
+    });
   }
   
   fetchArtworksByArtist(id: string): void {

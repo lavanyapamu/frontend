@@ -2,7 +2,7 @@
 <div class="orders-container" *ngIf="!showOrderDetails">
   <div class="orders-header">
     <h2 class="orders-title">MY ORDERS</h2>
-    
+
     <div class="orders-controls">
       <div class="items-count">
         {{ getTotalItems() }} Item(s)
@@ -76,9 +76,7 @@
             </span>
           </td>
           <td class="order-actions">
-            <button 
-              (click)="viewOrderDetails(order.order_id)" 
-              class="view-order-btn">
+            <button (click)="viewOrderDetails(order.order_id)" class="view-order-btn">
               VIEW ORDER
             </button>
           </td>
@@ -106,7 +104,8 @@
   <div class="order-details-modal" (click)="$event.stopPropagation()">
     <div class="modal-header">
       <div class="order-info">
-        <h2>ORDER {{ getOrderNumber(selectedOrder?.order_id || '') }} - {{ getStatusLabel(selectedOrder?.status || '') }}</h2>
+        <h2>ORDER {{ getOrderNumber(selectedOrder?.order_id || '') }} - {{ getStatusLabel(selectedOrder?.status || '')
+          }}</h2>
         <p class="print-date">Print Date: {{ printDate }}</p>
 
       </div>
@@ -143,94 +142,96 @@
           <h3>PAYMENT METHOD</h3>
           <div class="payment-info" *ngIf="selectedOrder.payment">
             <p><strong>{{ selectedOrder.payment.payment_method.toUpperCase() }}
-            </strong></p>
+              </strong></p>
             <p *ngIf="selectedOrder.payment.upi_id">UPI ID: {{ selectedOrder.payment.upi_id }}</p>
           </div>
         </div>
 
         <!-- Shipping Method -->
-<div class="info-section">
-  <h3>SHIPPING METHOD</h3>
-  <div class="shipping-info">
-    <p><strong>Free Shipping</strong></p>
-    <p>Standard Delivery</p>
+        <div class="info-section">
+          <h3>SHIPPING METHOD</h3>
+          <div class="shipping-info">
+            <p><strong>Free Shipping</strong></p>
+            <p>Standard Delivery</p>
 
-    <!-- ✅ Guarded version with "as fee" -->
-    <ng-container *ngIf="selectedOrder?.payment?.shipping_fee as fee">
-      <p *ngIf="fee > 0">
-        Fee: {{ formatCurrency(fee) }}
-      </p>
-    </ng-container>
-  </div>
-</div>
+            <!-- ✅ Guarded version with "as fee" -->
+            <ng-container *ngIf="selectedOrder?.payment?.shipping_fee as fee">
+              <p *ngIf="fee > 0">
+                Fee: {{ formatCurrency(fee) }}
+              </p>
+            </ng-container>
+          </div>
+        </div>
 
-      <!-- Items Ordered Section -->
-      <div class="items-section">
-        <h3>ITEMS ORDERED</h3>
-        <table class="items-table">
-          <thead>
-            <tr>
-              <th>PRODUCT</th>
-              <th>PRICE</th>
-              <th>QTY</th>
-              <th>SUBTOTAL</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let item of selectedOrder.order_items  || selectedOrder?.items|| []" class="item-row">
+        <!-- Items Ordered Section -->
+        <div class="items-section">
+          <h3>ITEMS ORDERED</h3>
+          <table class="items-table">
+            <thead>
+              <tr>
+                <th>PRODUCT</th>
+                <th>PRICE</th>
+                <th>QTY</th>
+                <th>SUBTOTAL</th>
+                <th>STATUS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of selectedOrder.order_items  || selectedOrder?.items|| []" class="item-row">
 
-              <td class="product-info">
-                <div class="product-details">
-                  <img 
-                      [src]="getImageUrl(item.artwork?.image)" 
-                      [alt]="item.artwork?.title || 'Artwork'"
-                      class="product-image"
-                      (error)="onImageError($event)"
-                    >
-                  <div class="product-text">
-                    <p class="product-name">{{ item.artwork?.title || 'Unknown Artwork' }}</p>
-                 
+                <td class="product-info">
+                  <div class="product-details">
+                    <img [src]="getImageUrl(item.artwork?.image)" [alt]="item.artwork?.title || 'Artwork'"
+                      class="product-image" (error)="onImageError($event)">
+                    <div class="product-text">
+                      <p class="product-name">{{ item.artwork?.title || 'Unknown Artwork' }}</p>
+
+                    </div>
                   </div>
-                </div>
-              </td>
-              <td class="item-price">{{ formatCurrency(item.price) }}</td>
-              <td class="item-quantity">{{ item.quantity }}</td>
-              <td class="item-subtotal">{{ formatCurrency(item.price * item.quantity) }}</td>
-            </tr>
-          </tbody>
-        </table>
+                </td>
+                <td class="item-price">{{ formatCurrency(item.price) }}</td>
+                <td class="item-quantity">{{ item.quantity }}</td>
+                <td class="item-subtotal">{{ formatCurrency(item.price * item.quantity) }}</td>
+                <td class="item-status">
+                  <span class="status-badge status-{{ item.status | lowercase }}">
+                    {{ item.status | titlecase }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
-       <!-- Order Summary -->
-<div class="order-summary">
-  <div class="summary-row" *ngIf="selectedOrder?.payment?.subtotal as subtotal">
-    <span>Subtotal:</span>
-    <span>{{ formatCurrency(subtotal || 0) }}</span>
-  </div>
+          <!-- Order Summary -->
+          <div class="order-summary">
+            <div class="summary-row" *ngIf="selectedOrder?.payment?.subtotal as subtotal">
+              <span>Subtotal:</span>
+              <span>{{ formatCurrency(subtotal || 0) }}</span>
+            </div>
 
-  <div class="summary-row" *ngIf="selectedOrder?.payment?.shipping_fee as shippingFee">
-    <span>Shipping & Handling:</span>
-    <span>{{ formatCurrency(shippingFee || 0) }}</span>
-  </div>
+            <div class="summary-row" *ngIf="selectedOrder?.payment?.shipping_fee as shippingFee">
+              <span>Shipping & Handling:</span>
+              <span>{{ formatCurrency(shippingFee || 0) }}</span>
+            </div>
 
-  <div class="summary-row total-row">
-    <span><strong>Total:</strong></span>
-    <span><strong>{{ formatCurrency(selectedOrder.total_price || 0) }}</strong>
-    </span>
-  </div>
-</div>
+            <div class="summary-row total-row">
+              <span><strong>Total:</strong></span>
+              <span><strong>{{ formatCurrency(selectedOrder.total_price || 0) }}</strong>
+              </span>
+            </div>
+          </div>
 
-      <!-- Action Buttons -->
-      <div class="order-actions-section">
-        <button (click)="printOrder()" class="action-btn print-btn">
-          🖨️ Print Order
-        </button>
-        <button (click)="trackOrder(selectedOrder.order_id)" class="action-btn track-btn">
-          📦 Track Order
-        </button>
-        <button (click)="reorder(selectedOrder.order_id)" class="action-btn reorder-btn">
-          🔄 Reorder
-        </button>
+          <!-- Action Buttons -->
+          <div class="order-actions-section">
+            <button (click)="printOrder()" class="action-btn print-btn">
+              🖨️ Print Order
+            </button>
+            <button (click)="trackOrder(selectedOrder.order_id)" class="action-btn track-btn">
+              📦 Track Order
+            </button>
+            <button (click)="reorder(selectedOrder.order_id)" class="action-btn reorder-btn">
+              🔄 Reorder
+            </button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>

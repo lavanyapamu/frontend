@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { interval, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -12,6 +12,7 @@ interface OrderItem {
   artwork_id: string;
   quantity: number;
   price: number;
+  status: string;  
   artwork?: {
     artwork_id: string;
     title: string;
@@ -90,32 +91,44 @@ export class OrdersComponent implements OnInit, OnDestroy {
   /**
    * Load all orders from backend
    */
-  loadOrders(): void {
-    this.isLoading = true;
-    
-    // Fetch all orders using the new endpoint
-    this.http.get<any>(`${this.apiUrl}/orders/all`).subscribe({
-      next: (response) => {
-        // Handle the response - it should be an array of orders
-        if (Array.isArray(response)) {
-          this.orders = response;
-        } else {
-          console.error('Unexpected response format:', response);
-          this.orders = [];
-        }
-        
-        // Load user details for orders
-        this.loadUserDetails();
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('Error loading orders:', error);
-        this.isLoading = false;
-        alert('Failed to load orders. Please check your backend connection.');
-        this.orders = [];
-        this.filterOrders();
-      }
-    });
+loadOrders(): void {
+ this.isLoading = true;
+
+  const artistId = localStorage.getItem('user_id'); // this time, the artist
+  const token = localStorage.getItem('access_token');
+  
+  if (!artistId || !token) {
+    console.error('No artist ID or token found in localStorage');
+    this.isLoading = false;
+    return;
   }
+
+   const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`
+  });
+
+  this.http.get<any>(`http://localhost:5000/api/orders/artist-orders/${artistId}`, { headers }).subscribe({
+    next: (response) => {
+      this.orders = Array.isArray(response.orders) ? response.orders : [];
+       // ✅ Fix: response.orders, not response
+    this.orders = Array.isArray(response.orders) ? response.orders : [];
+
+    // ✅ Set filteredOrders initially to all orders
+    this.filteredOrders = [...this.orders];
+
+    // ✅ Update pagination
+    this.updatePagination();
+      this.isLoading = false;
+    },
+    error: (error: HttpErrorResponse) => {
+      console.error('Error loading artist orders:', error);
+      this.isLoading = false;
+      alert('Failed to load artist orders.');
+      this.orders = [];
+    }
+  });
+}
+
   
   /**
    * Load user details for orders (simplified since orders already contain items)
@@ -256,31 +269,85 @@ export class OrdersComponent implements OnInit, OnDestroy {
   /**
    * Update order status
    */
-  updateOrderStatus(orderId: string, event: any): void {
-    const newStatus = event.target.value;
-    const originalOrder = this.orders.find(o => o.order_id === orderId);
-    const originalStatus = originalOrder?.status;
-    
-    this.http.put(`${this.apiUrl}/orders/${orderId}/status`, { status: newStatus }).subscribe({
-      next: (response) => {
-        // Update local order status
+  // updateOrderStatus(orderId: string, event: any): void {
+  //   const newStatus = event.target.value;
+  //   const originalOrder = this.orders.find(o => o.order_id === orderId);
+  //   const originalStatus = originalOrder?.status;
+
+  //   const token = localStorage.getItem('access_token'); // 👈 stored at login
+  //     if (!token) {
+  //     alert('You are not logged in!');
+  //     return;
+  //    }
+
+  // const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  //   console.log("PUT URL:", `${this.apiUrl}/orders/${orderId}/status`);
+  //   this.http.put(`${this.apiUrl}/orders/${orderId}/status`, { status: newStatus }, { headers }  ).subscribe({
+  //     next: (response) => {
+  //       // Update local order status
+  //       const order = this.orders.find(o => o.order_id === orderId);
+  //       if (order) {
+  //         order.status = newStatus;
+  //         // order.updated_at = new Date().toISOString();
+  //       }
+  //       this.filterOrders();
+  //       console.log('Order status updated successfully');
+  //     },
+  //     error: (error: HttpErrorResponse) => {
+  //       console.error('Error updating order status:', error);
+  //       // Revert the dropdown to previous value
+  //       event.target.value = originalStatus || 'pending';
+  //       alert('Failed to update order status. Please try again.');
+  //     }
+  //   });
+  // }
+  
+
+
+  updateOrderItemStatus(orderId: string, orderItemId: string, event: Event): void {
+  const selectElement = event.target as HTMLSelectElement;
+  const newStatus = selectElement.value;
+
+  const token = localStorage.getItem('access_token');
+  if (!token) {
+    alert('You are not logged in!');
+    return;
+  }
+
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+  const url = `${this.apiUrl}/order-items/items/${orderItemId}/status`;
+  console.log("PUT URL:", url);
+
+  this.http.put(url, { status: newStatus }, { headers })
+    .subscribe({
+      next: () => {
+        // Update local state
         const order = this.orders.find(o => o.order_id === orderId);
-        if (order) {
-          order.status = newStatus;
-          order.updated_at = new Date().toISOString();
+        const item = order?.items.find(i => i.order_item_id === orderItemId);
+        if (item) {
+          item.status = newStatus;
         }
+
+        // Refresh order status summary (optional)
         this.filterOrders();
-        console.log('Order status updated successfully');
+        console.log('Order item status updated successfully');
       },
       error: (error: HttpErrorResponse) => {
-        console.error('Error updating order status:', error);
-        // Revert the dropdown to previous value
-        event.target.value = originalStatus || 'pending';
-        alert('Failed to update order status. Please try again.');
+        console.error('Error updating order item status:', error);
+
+        // Revert dropdown
+        const order = this.orders.find(o => o.order_id === orderId);
+        const item = order?.items.find(i => i.order_item_id === orderItemId);
+        if (item) {
+          selectElement.value = item.status || 'pending';
+        }
+
+        alert('Failed to update item status. Please try again.');
       }
     });
-  }
-  
+}
+
   /**
    * View order details
    */
@@ -321,6 +388,8 @@ viewOrderDetails(order: Order): void {
       'confirmed': 'Confirmed',
       'shipped': 'Shipped',
       'delivered': 'Delivered',
+      'returned':'Returned',
+      'refunded':'Refunded',
       'cancelled': 'Cancelled',
       'failed': 'Failed'
     };

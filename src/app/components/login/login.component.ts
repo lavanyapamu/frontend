@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { jwtDecode } from 'jwt-decode';
 
@@ -10,7 +10,7 @@ import { jwtDecode } from 'jwt-decode';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, FormsModule, HttpClientModule, RouterModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -44,6 +44,7 @@ export class LoginComponent {
         localStorage.setItem('user_id', res.user_id);
         localStorage.setItem('access_token', res.token)
         localStorage.setItem('role_id', res.role_id);
+        localStorage.setItem('role', res.role);
          
         
         if (role_id === 2) {

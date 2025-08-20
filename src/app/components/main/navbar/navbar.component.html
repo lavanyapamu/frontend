@@ -1,4 +1,3 @@
-
 <header class="header">
     <div class="container">
       <div class="nav-brand">
@@ -9,14 +8,65 @@
       </div>
       
       <nav class="nav-menu">
-        <a routerLink="/main/home" routerLinkActive="active" class="nav-link active" style="cursor: pointer;">Home</a>
-        <a routerLink="/artworks" routerLinkActive="active"  class="nav-link" style="cursor: pointer;">Artwork</a>
-        <a routerLink="/artists" routerLinkActive="active"  class="nav-link" style="cursor: pointer;">Artists</a>
+        <a routerLink="/main/home" routerLinkActive="active" class="nav-link active">Home</a>
+        <a routerLink="/artists" routerLinkActive="active" class="nav-link">Artists</a>
+        
+        <!-- Categories Dropdown -->
+        <div class="dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Categories
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" routerLink="/categories/paintings">
+              <i class="fas fa-paint-brush me-2"></i>Paintings
+            </a></li>
+            <li><a class="dropdown-item" routerLink="/categories/sculptures">
+              <i class="fas fa-cube me-2"></i>Sculptures
+            </a></li>
+            <li><a class="dropdown-item" routerLink="/categories/handicrafts">
+              <i class="fas fa-hand-paper me-2"></i>Handicrafts
+            </a></li>
+            <li><a class="dropdown-item" routerLink="/categories/photography">
+              <i class="fas fa-camera me-2"></i>Photography
+            </a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" routerLink="/categories">
+              <i class="fas fa-th-large me-2"></i>All Categories
+            </a></li>
+          </ul>
+        </div>
+        
+        <a routerLink="/contact" routerLinkActive="active" class="nav-link">Contact Us</a>
       </nav>
       
       <div class="nav-actions">
         <button class="btn-secondary" (click)="onSignup()">Signup</button>
         <button class="btn-primary" (click)="onLogin()">Login</button>
+      </div>
+      
+      <!-- Mobile Menu Toggle -->
+      <button class="mobile-menu-toggle d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#mobileNav">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+    
+    <!-- Mobile Navigation -->
+    <div class="collapse" id="mobileNav">
+      <div class="mobile-nav-menu">
+        <a routerLink="/main/home" class="mobile-nav-link">Home</a>
+        <a routerLink="/artists" class="mobile-nav-link">Artists</a>
+        <div class="mobile-nav-submenu">
+          <h6>Categories</h6>
+          <a routerLink="/categories/paintings" class="mobile-nav-link ps-3">Paintings</a>
+          <a routerLink="/categories/sculptures" class="mobile-nav-link ps-3">Sculptures</a>
+          <a routerLink="/categories/handicrafts" class="mobile-nav-link ps-3">Handicrafts</a>
+          <a routerLink="/categories/photography" class="mobile-nav-link ps-3">Photography</a>
+        </div>
+        <a routerLink="/contact" class="mobile-nav-link">Contact Us</a>
+        <div class="mobile-nav-actions mt-3">
+          <button class="btn btn-outline-primary me-2" (click)="onSignup()">Signup</button>
+          <button class="btn btn-primary" (click)="onLogin()">Login</button>
+        </div>
       </div>
     </div>
   </header>

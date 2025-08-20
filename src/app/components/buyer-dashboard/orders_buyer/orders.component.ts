@@ -9,6 +9,7 @@ export interface OrderItem {
   artwork_id: string;
   quantity: number;
   price: number;
+  status: string;  
   artwork?: {
     title: string;
     description: string;

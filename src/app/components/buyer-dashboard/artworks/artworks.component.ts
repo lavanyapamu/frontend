@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
@@ -20,6 +20,8 @@ export class BuyerArtworksComponent {
   errorMessage: string = '';
   imageURL = "http://localhost:5000/static/uploads/";
   user_id: string = '';
+  user = signal<any | null>(null);
+  
 
   // Search and Filter properties
   searchTerm: string = '';
@@ -37,8 +39,10 @@ export class BuyerArtworksComponent {
     this.loadAllArtworks();
     this.loadCartItems();
     this.loadWishlistItems();
+    this.loadUser();
   }
 
+  
   loadAllArtworks(): void {
     this.loading = true;
     this.http.get<any[]>(`http://localhost:5000/api/artworks`).subscribe({
@@ -55,6 +59,8 @@ export class BuyerArtworksComponent {
     });
   }
 
+
+  
   // Search functionality with debounce
   onSearchChange(): void {
     clearTimeout(this.searchTimeout);
@@ -242,7 +248,27 @@ export class BuyerArtworksComponent {
       }
     });
   }
+// ✅ Paste loadUser() here
+loadUser(): void {
+  const token = localStorage.getItem('access_token');
+  if (!token) {
+    console.error('No token found');
+    return;
+  }
 
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`
+  });
+
+  this.http.get<any>(`http://localhost:5000/api/users/${this.user_id}`, { headers }).subscribe({
+    next: (response) => {
+      this.user.set(response); // since you're using signals
+    },
+    error: (error) => {
+      console.error('Failed to load user:', error);
+    }
+  });
+}
   isInCart(artworkId: string): boolean {
     return this.cartItems.some(item => item.artwork_id === artworkId);
   }

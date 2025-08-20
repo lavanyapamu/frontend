@@ -1,94 +1,96 @@
+<div class="stats-grid">
+  <div class="stat-card blue">
+    <h3>Total Artworks</h3>
+    <div class="stat-number">{{ artworks.length }}</div>
+  </div>
+  <div class="stat-card red">
+    <h3>Pending orders</h3>
+    <div class="stat-number">09</div>
+  </div>
+  <div class="stat-card purple">
+    <h3>Total orders</h3>
+    <div class="stat-number">3</div>
+  </div>
+  <div class="stat-card gray">
+    <h3>Revenue</h3>
+    <div class="stat-number">11</div>
+  </div>
+</div>
+<section class="artworks-section">
+  <div class="section-header">
+    <h2>Recent Artworks</h2>
+  </div>
 
-      <div class="stats-grid">
-        <div class="stat-card blue">
-          <h3>Total Artworks</h3>
-          <div class="stat-number">{{ artworks.length }}</div>
-        </div>
-        <div class="stat-card red">
-          <h3>Pending orders</h3>
-          <div class="stat-number">09</div>
-        </div>
-        <div class="stat-card purple">
-          <h3>Total orders</h3>
-          <div class="stat-number">3</div>
-        </div>
-        <div class="stat-card gray">
-          <h3>Revenue</h3>
-          <div class="stat-number">45,365.00</div>
-        </div>
+
+  <div *ngIf="loading" class="loading-message">Loading artworks...</div>
+
+
+  <div *ngIf="!loading && errorMessage" class="error-message">{{ errorMessage }}</div>
+
+
+  <div *ngIf="!loading && !errorMessage && artworks.length === 0" class="no-artworks-message">
+    No artworks found.
+  </div>
+
+
+  <div *ngIf="!loading && !errorMessage && artworks.length > 0" class="artworks-grid">
+    <div class="artwork-card" *ngFor="let artwork of artworks" (click)="viewArtwork(artwork)">
+      <div class="artwork-image">
+        <img [src]="imageURL + artwork.image" [alt]="artwork.title" />
       </div>
-      <section class="artworks-section">
-        <div class="section-header">
-          <h2>Recent Artworks</h2>
-        </div>
-      
-        
-        <div *ngIf="loading" class="loading-message">Loading artworks...</div>
-      
-        
-        <div *ngIf="!loading && errorMessage" class="error-message">{{ errorMessage }}</div>
-      
-       
-        <div *ngIf="!loading && !errorMessage && artworks.length === 0" class="no-artworks-message">
-          No artworks found.
-        </div>
-      
-       
-        <div *ngIf="!loading && !errorMessage && artworks.length > 0" class="artworks-grid">
-          <div class="artwork-card" *ngFor="let artwork of artworks" (click)="viewArtwork(artwork)">
-            <div class="artwork-image">
-              <img [src]="imageURL + artwork.image" [alt]="artwork.title" />
-            </div>
-            <div class="artwork-info">
-              <h4>{{ artwork.title }}</h4>
-              <p class="artwork-category">{{ artwork.category_name }}</p>
-              <p class="artwork-quantity">Qty: {{ artwork.quantity }}</p>
-              <p class="artwork-description">{{ artwork.description }}</p>
-              <div class="artwork-footer">
-                <span class="artwork-price">₹{{ artwork.price }}</span>
-                <div class="action-icons">
-                  <button class="icon-btn delete-btn" (click)="deleteArtwork(artwork.artwork_id)" title="Delete">
-                    <i class="fas fa-trash-alt text-danger"></i>
-                  </button>
-                
-                  <!-- Edit Icon Button -->
-                  <button class="icon-btn edit-btn" (click)="editArtwork(artwork.artwork_id)" title="Edit">
-                    <i class="fas fa-edit text-primary"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
+      <div class="artwork-info">
+        <h4>{{ artwork.title }}</h4>
+        <p class="artwork-category category-{{ artwork.category_name | lowercase }}">
+          {{ artwork.category_name }}
+        </p>
+
+        <p class="artwork-quantity">Qty: {{ artwork.quantity }}</p>
+        <p class="artwork-description">{{ artwork.description }}</p>
+        <div class="artwork-footer">
+          <span class="artwork-price">{{ artwork.price }}</span>
+          <div class="action-icons">
+            <button class="icon-btn delete-btn" (click)="deleteArtwork(artwork.artwork_id)" title="Delete">
+              <i class="fas fa-trash-alt text-danger"></i>
+            </button>
+
+            <!-- Edit Icon Button -->
+            <button class="icon-btn edit-btn" (click)='editArtwork(artwork.artwork_id)' title="Edit">
+              <i class="fas fa-edit text-primary"></i>
+            </button>
           </div>
         </div>
-      </section>
-      
-        
-      <section class="orders-section">
-        <div class="section-header">
-          <h2>Recent Orders</h2>
-        </div>
-      
-        <table class="orders-table">
-          <thead>
-            <tr>
-              <th>Order ID</th>
-              <th>Artwork</th>
-              <th>Customer</th>
-              <th>Quantity</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let order of recentOrders">
-              <td>{{ order.id }}</td>
-              <td>{{ order.artwork }}</td>
-              <td>{{ order.customer }}</td>
-              <td>{{ order.quantity }}</td>
-              <td>{{ order.status }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>      
-    <!-- </div> -->
-  <!-- </main> -->
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="orders-section">
+  <div class="recent-orders">
+    <h3>Recent Orders</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Artwork</th>
+          <th>Customer</th>
+          <th>Quantity</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let order of recentOrders">
+          <td>{{ order.order_id }}</td>
+          <td>{{ order.artwork_titles}}</td>
+          <td>{{ order.user_name}}</td>
+          <td>{{ order.quantity }}</td>
+          <td>{{ order.status }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</section>
+<!-- </div> -->
+<!-- </main> -->
 <!-- </div> -->

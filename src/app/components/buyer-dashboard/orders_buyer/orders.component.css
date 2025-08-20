@@ -512,6 +512,21 @@
   color: #333 !important;
 }
 
+/* .status-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-pending { background: #f0ad4e; color: white; }
+.status-confirmed { background: #0275d8; color: white; }
+.status-shipped { background: #5bc0de; color: white; }
+.status-delivered { background: #5cb85c; color: white; }
+.status-cancelled, .status-failed { background: #d9534f; color: white; }
+.status-refunded, .status-returned { background: #6c757d; color: white; } */
+
 /* Action Buttons Section */
 .order-actions-section {
   margin-top: 30px;

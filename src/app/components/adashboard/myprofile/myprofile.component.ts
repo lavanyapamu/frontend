@@ -8,12 +8,13 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './myprofile.component.html',
-  styleUrl: './myprofile.component.css'
+  styleUrls: ['./myprofile.component.css']
 })
 export class MyProfileComponent implements OnInit {
   profileForm!: FormGroup;
   isEditMode = false;
   user_id: string = localStorage.getItem('user_id') || '';
+  userRole: string = localStorage.getItem('role') || 'Buyer'; // Artist or Buyer
   imagePreview: string | ArrayBuffer | null = null;
   profileImageFile!: File;
   earnings: number = 0;
@@ -30,14 +31,16 @@ export class MyProfileComponent implements OnInit {
     this.loadProfile();
   }
 
+  get isArtist(): boolean {
+    return this.userRole === 'Artist';
+  }
+
   loadProfile(): void {
-    const token = localStorage.getItem('access_token') || ''; 
+    const token = localStorage.getItem('access_token') || '';
 
     this.http.get<any>(
       `http://localhost:5000/api/users/${this.user_id}`,
-      {
-        headers: new HttpHeaders().set('Authorization', `Bearer ${token}`)
-      }
+      { headers: new HttpHeaders().set('Authorization', `Bearer ${token}`) }
     ).subscribe({
       next: (user) => {
         this.profileForm.patchValue({
@@ -45,14 +48,14 @@ export class MyProfileComponent implements OnInit {
           email: user.email,
           phone_number: user.phone_number
         });
-        this.earnings = user.earnings;
-        console.log(" Backend returned image value:", user.profile_image);
+
+        // Only set earnings if Artist
+        if (this.isArtist) {
+          this.earnings = user.earnings || 0;
+        }
 
         if (user.profile_image) {
-          this.imagePreview = user.profile_image
-          ? `http://localhost:5000/static/uploads/${user.profile_image}?t=${Date.now()}`
-          : null;
-
+          this.imagePreview = `http://localhost:5000/static/uploads/${user.profile_image}?t=${Date.now()}`;
         }
       },
       error: (err) => {
@@ -71,9 +74,7 @@ export class MyProfileComponent implements OnInit {
     if (file) {
       this.profileImageFile = file;
       const reader = new FileReader();
-      reader.onload = () => {
-        this.imagePreview = reader.result;
-      };
+      reader.onload = () => this.imagePreview = reader.result;
       reader.readAsDataURL(file);
     }
   }
@@ -86,17 +87,13 @@ export class MyProfileComponent implements OnInit {
 
     if (this.profileImageFile) {
       formData.append('profile_image', this.profileImageFile);
-     
     }
-    console.log(this.profileImageFile);
-    const token = localStorage.getItem('access_token') || '';
 
+    const token = localStorage.getItem('access_token') || '';
     this.http.patch<any>(
       `http://localhost:5000/api/users/${this.user_id}`,
       formData,
-      {
-        headers: new HttpHeaders().set('Authorization', `Bearer ${token}`)
-      }
+      { headers: new HttpHeaders().set('Authorization', `Bearer ${token}`) }
     ).subscribe({
       next: (res) => {
         alert(res.message || 'Profile updated.');

@@ -408,7 +408,7 @@ export class CheckoutComponent implements OnInit {
           order_id: orderId,
           artwork_id: item.artwork_id,
           quantity: item.quantity,
-          price: item.price
+          // price: item.price
         };
         await this.http.post('http://localhost:5000/api/order-items/', orderItemData, { headers }).toPromise();
       }

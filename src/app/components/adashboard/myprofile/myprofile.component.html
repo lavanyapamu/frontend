@@ -1,5 +1,3 @@
-
-
 <div class="profile-container">
   <div class="profile-header">
     <div class="profile-image-wrap">
@@ -7,7 +5,6 @@
       <ng-template #noImage>
         <p>No profile image.</p>
       </ng-template>
-
     </div>
     <div class="profile-info">
       <h2>{{ profileForm.value.full_name || 'User Name' }}</h2>
@@ -35,7 +32,8 @@
         <input class="form-control" formControlName="phone_number" [readonly]="!isEditMode" />
       </div>
 
-      <div class="form-group">
+      <!-- Earnings shown only for Artist -->
+      <div class="form-group" *ngIf="isArtist">
         <label>Total Earnings</label>
         <input class="form-control" [value]="earnings" readonly />
       </div>

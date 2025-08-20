@@ -1,77 +1,160 @@
-/* sidenav.component.css */
-
-.sidebar {
-  width: 220px;
-  background-color: #f3f3f3; 
-  height: 100vh;
-  padding-top: 20px;
-  display: flex;
-  flex-direction: column;
- 
-}
-
-.sidebar-item {
+.navbar {
+  width: 100%;
+  height: 60px;
+  background-color: #ffffff;
   display: flex;
   align-items: center;
-  padding: 12px 20px;
+  justify-content: center;
+  padding: 0 2rem;
+  border-bottom: 1px solid #f0f0f0;
+
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: none;
+  gap: 3rem;
+}
+
+/* Hide all icons completely */
+.navbar-icon {
+  display: none !important;
+}
+
+/* Navbar Items - Simple and clean */
+.navbar-item {
+  display: flex;
+  align-items: center;
+  padding: 0;
   cursor: pointer;
-  transition: background 0.3s;
   position: relative;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  border: none;
+  background: none;
+    border-top:none;
 }
 
-.sidebar-item:hover {
-  background-color: #bedcfc;
+/* Remove any default hover effects */
+.navbar-item:hover {
+  background-color: transparent !important;
+  border-radius: 0 !important;
 }
 
-.sidebar-icon {
-  margin-right: 15px;
-  font-size: 18px;
-  width: 20px;
+/* Clean text styling - exactly like Tulika Arts */
+.navbar-text {
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.5px !important;
+  color: #333333 !important;
+  transition: color 0.2s ease;
+  text-transform: capitalize;
+  margin: 0 !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.4;
 }
 
-.sidebar-text {
-  font-size: 16px;
+/* Simple hover effect */
+.navbar-item:hover .navbar-text {
+  color: #7c7878 !important;
 }
 
-.badge {
-  background-color: #e74c3c;
-  color: white;
-  font-size: 12px;
-  padding: 2px 8px;
-  border-radius: 12px;
-  position: absolute;
-  right: 20px;
+/* Active state - subtle emphasis */
+.navbar-item.active .navbar-text {
+  color: #000000 !important;
+  font-weight: 800 !important;
 }
 
+/* Logout styling - keep it subtle */
 .logout-item {
-  margin-top: auto;
-  border-top: 1px solid #e9ecef;
+  /* margin-left: 2rem;
+  padding-left: 2rem; */
+  border-top:none;
 }
 
-.logout-item:hover {
-  background-color: #c99191;
+.logout-item .navbar-text {
+  color: #dc3545 !important;
 }
 
-.logout-item .sidebar-text {
-  color: #070607;
+.logout-item:hover .navbar-text {
+  color: #c82333 !important;
 }
 
-.logout-item:hover {
-  background-color: #f8d7da;
+/* Remove Bootstrap overrides */
+.text-danger {
+  color: #dc3545 !important;
 }
 
-/* Responsive Design for Sidebar */
-@media (max-width: 768px) {
-  .sidebar {
-    width: 100%;
-    min-height: auto;
-    flex-direction: row;
-    overflow-x: auto;
-    padding: 1rem;
+.fw-semibold {
+  font-weight: 500 !important;
+}
+
+/* Clean responsive design */
+@media (max-width: 1200px) {
+  .navbar {
+    gap: 2.5rem;
+    padding: 0 1.5rem;
+   
+  }
+}
+
+@media (max-width: 992px) {
+  .navbar {
+    gap: 2rem;
+    padding: 0 1rem;
+   
   }
   
-  .sidebar-item {
-    padding: 0.5rem 1rem;
-    white-space: nowrap;
+  .navbar-text {
+    font-size: 13px !important;
   }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    height: auto;
+    min-height: 50px;
+    padding: 0.8rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+     
+  }
+  
+  .navbar-text {
+    font-size: 13px !important;
+  }
+  
+  .logout-item {
+    border-left: none;
+    margin-left: 0;
+    padding-left: 0;
+    /* border-top: 1px solid #e0e0e0; */
+    padding-top: 0.8rem;
+    margin-top: 0.5rem;
+    border-top:none;
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    gap: 1.2rem;
+    padding: 0.6rem;
+  }
+  
+  .navbar-text {
+    font-size: 12px !important;
+    letter-spacing: 0.3px !important;
+  }
+}
+
+/* Remove any focus outlines for cleaner look */
+.navbar-item:focus {
+  outline: none;
+}
+
+/* Ensure smooth interactions */
+* {
+  box-sizing: border-box;
 }
