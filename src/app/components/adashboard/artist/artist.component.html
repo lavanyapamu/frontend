@@ -52,22 +52,12 @@
 
   <!-- Artworks grid using Bootstrap -->
   <div *ngIf="!loading && !errorMessage && artworks.length > 0" class="row">
-    <div class="col-12 col-sm-6 col-md-4 mb-4" *ngFor="let artwork of artworks">
+    <div class="col-12 col-sm-6 col-md-4 mb-4" *ngFor="let artwork of artworks" (click)="viewArtwork(artwork)">
       <div class="artwork-card h-100">
 
         <!-- Artwork Image -->
         <div class="artwork-image">
           <img [src]="imageURL + artwork.image" [alt]="artwork.title" />
-
-          <!-- Overlay buttons -->
-          <div class="artwork-overlay">
-            <button class="icon-btn edit-btn" (click)="editArtwork(artwork.artwork_id); $event.stopPropagation()" title="Edit">
-              <i class="fas fa-edit"></i>
-            </button>
-            <button class="icon-btn delete-btn" (click)="deleteArtwork(artwork.artwork_id); $event.stopPropagation()" title="Delete">
-              <i class="fas fa-trash-alt"></i>
-            </button>
-          </div>
         </div>
 
         <!-- Artwork Info -->
@@ -79,8 +69,17 @@
           <p class="artwork-quantity">Qty: {{ artwork.quantity }}</p>
           <p class="artwork-description">{{ artwork.description }}</p>
 
+          <!-- Footer with price and buttons -->
           <div class="artwork-footer">
             <span class="artwork-price">{{ artwork.price }}</span>
+            <div class="action-icons">
+              <button class="icon-btn edit-btn" (click)="editArtwork(artwork.artwork_id); $event.stopPropagation()" title="Edit">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="icon-btn delete-btn" (click)="deleteArtwork(artwork.artwork_id); $event.stopPropagation()" title="Delete">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </div>
           </div>
         </div>
 

@@ -98,7 +98,7 @@
             <td class="status">
               <div *ngFor="let item of order.items" class="status-item">
                 <select class="form-control status-dropdown ms-2" [class]="'status-' + item.status"
-                  [value]="item.status" (change)="updateOrderItemStatus(order.order_id, item.order_item_id, $event)">
+                  [(ngModel)]="item.status" (change)="updateOrderItemStatus(order.order_id, item.order_item_id, $event)">
 
                   <option *ngFor="let status of statuses" [value]="status">
                     {{ status | titlecase }}

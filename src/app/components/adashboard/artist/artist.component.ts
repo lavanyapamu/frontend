@@ -136,15 +136,7 @@ export class ArtistComponent implements OnInit {
   // get earnings():number{
   //   return this.artworks.earnings;
   // }
-  viewArtwork(artwork: any) {
-    console.log('Navigating to artwork:', artwork); // add this line
-    if (artwork && artwork.artwork_id) {
-      this.router.navigate(['/artwork-details', artwork.artwork_id]);
-    }
-    else {
-      console.error('Artwork ID is missing or undefined');
-    }
-  }
+
   loadUser(): void {
     const token = localStorage.getItem('access_token');
     if (!token) {
@@ -166,5 +158,15 @@ export class ArtistComponent implements OnInit {
       }
     });
   }
+   viewArtwork(artwork: any) {
+    console.log('Navigating to artwork:', artwork); // add this line
+    if (artwork&&artwork.artwork_id)
+      {
+         this.router.navigate(['/artwork-details', artwork.artwork_id]);
+      } 
+    else {
+      console.error('Artwork ID is missing or undefined');
+    }
+}
 
 }
