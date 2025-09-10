@@ -1,7 +1,7 @@
 <!-- Browse Artworks View -->
 <div class="dashboard-header">
-   <h2>
-    Welcome, {{ user()?.full_name | titlecase  }}
+  <h2>
+    Welcome, {{ user()?.full_name | titlecase }}
   </h2>
 </div>
 
@@ -17,7 +17,7 @@
       <img src="c4.jpg" class="d-block w-100" alt="Slide 3">
     </div>
   </div>
-  
+
   <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
     <span class="carousel-control-prev-icon"></span>
   </button>
@@ -28,16 +28,11 @@
 <div class="content-section">
   <div class="section-header">
     <h2>Browse Artworks</h2>
-    
+
     <!-- Search Bar -->
     <div class="search-container">
-      <input 
-        type="text" 
-        class="search-input" 
-        placeholder="Search by artwork name, artist, or category..."
-        [(ngModel)]="searchTerm"
-        (input)="onSearchChange()"
-      />
+      <input type="text" class="search-input" placeholder="Search by artwork name, artist, or category..."
+        [(ngModel)]="searchTerm" (input)="onSearchChange()" />
       <i class="fas fa-search search-icon"></i>
     </div>
   </div>
@@ -46,15 +41,14 @@
   <div class="filters-section">
     <div class="filters-row">
       <!-- Category Filter -->
+      <!-- Category Filter -->
       <div class="filter-group">
         <label for="category">Category:</label>
         <select id="category" [(ngModel)]="selectedCategory" (change)="applyFilters()">
           <option value="">All Categories</option>
-          <option value="digital">Digital</option>
-          <option value="painting">Painting</option>
-          <option value="sculpture">Sculpture</option>
-          <option value="photography">Photography</option>
-          <option value="drawing">Drawing</option>
+          <option *ngFor="let cat of filters.categories" [value]="cat">
+            {{ cat | titlecase }}
+          </option>
         </select>
       </div>
 
@@ -63,33 +57,20 @@
         <label for="style">Style:</label>
         <select id="style" [(ngModel)]="selectedStyle" (change)="applyFilters()">
           <option value="">All Styles</option>
-          <option value="abstract">Abstract</option>
-          <option value="realism">Realism</option>
-          <option value="impressionism">Impressionism</option>
-          <option value="modern">Modern</option>
-          <option value="contemporary">Contemporary</option>
+          <option *ngFor="let style of filters.styles" [value]="style">
+            {{ style | titlecase }}
+          </option>
         </select>
       </div>
+
 
       <!-- Price Range Filter -->
       <div class="filter-group price-range">
         <label>Price Range:</label>
         <div class="price-inputs">
-          <input 
-            type="number" 
-            placeholder="Min" 
-            [(ngModel)]="minPrice" 
-            (input)="applyFilters()"
-            class="price-input"
-          />
+          <input type="number" placeholder="Min" [(ngModel)]="minPrice" (input)="applyFilters()" class="price-input" />
           <span>-</span>
-          <input 
-            type="number" 
-            placeholder="Max" 
-            [(ngModel)]="maxPrice" 
-            (input)="applyFilters()"
-            class="price-input"
-          />
+          <input type="number" placeholder="Max" [(ngModel)]="maxPrice" (input)="applyFilters()" class="price-input" />
         </div>
       </div>
 
@@ -117,23 +98,23 @@
     <div class="active-filters" *ngIf="hasActiveFilters()">
       <span class="filter-label">Active Filters:</span>
       <span class="filter-tag" *ngIf="searchTerm">
-        Search: "{{ searchTerm }}" 
+        Search: "{{ searchTerm }}"
         <i class="fas fa-times" (click)="clearSearch()"></i>
       </span>
       <span class="filter-tag" *ngIf="selectedCategory">
-        Category: {{ selectedCategory | titlecase }} 
+        Category: {{ selectedCategory | titlecase }}
         <i class="fas fa-times" (click)="clearCategory()"></i>
       </span>
       <span class="filter-tag" *ngIf="selectedStyle">
-        Style: {{ selectedStyle | titlecase }} 
+        Style: {{ selectedStyle | titlecase }}
         <i class="fas fa-times" (click)="clearStyle()"></i>
       </span>
       <span class="filter-tag" *ngIf="minPrice || maxPrice">
-        Price: ${{ minPrice || 0 }} - ${{ maxPrice || '∞' }} 
+        Price: ${{ minPrice || 0 }} - ${{ maxPrice || '∞' }}
         <i class="fas fa-times" (click)="clearPriceRange()"></i>
       </span>
       <span class="filter-tag" *ngIf="sortBy">
-        Sort: {{ getSortLabel(sortBy) }} 
+        Sort: {{ getSortLabel(sortBy) }}
         <i class="fas fa-times" (click)="clearSort()"></i>
       </span>
     </div>
@@ -155,11 +136,8 @@
       <div class="artwork-image">
         <img [src]="artwork.image ? imageURL + artwork.image : 'assets/default-image.png'" alt="Artwork" />
         <div class="artwork-overlay">
-          <button
-            class="action-btn wishlist-btn"
-            [class.active]="isInWishlist(artwork.artwork_id)"
-            (click)="toggleWishlist(artwork); $event.stopPropagation()"
-            >
+          <button class="action-btn wishlist-btn" [class.active]="isInWishlist(artwork.artwork_id)"
+            (click)="toggleWishlist(artwork); $event.stopPropagation()">
             <span class="icon"><i class="fas fa-heart"></i></span>
           </button>
         </div>
@@ -176,10 +154,7 @@
         </div> -->
         <div class="artwork-footer">
           <span class="artwork-price">{{ artwork.price | currency:'INR':'symbol' }}</span>
-          <button
-            class="add-to-cart-btn"
-            (click)="addToCart(artwork);  $event.stopPropagation()"
-            >
+          <button class="add-to-cart-btn" (click)="addToCart(artwork);  $event.stopPropagation()">
             Add to Cart
           </button>
         </div>

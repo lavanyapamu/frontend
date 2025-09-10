@@ -1,5 +1,4 @@
-
- <div class="checkout-container">
+<div class="checkout-container">
   <!-- Progress Indicator -->
   <div class="progress-indicator">
     <div class="step" [ngClass]="getStepClass(1)">
@@ -9,7 +8,7 @@
       </div>
       <span class="step-label">BILLING INFORMATION</span>
     </div>
-    
+
     <div class="step" [ngClass]="getStepClass(2)">
       <div class="step-icon">
         <span *ngIf="!isStepCompleted(2)">2</span>
@@ -17,7 +16,7 @@
       </div>
       <span class="step-label">SHIPPING METHOD</span>
     </div>
-    
+
     <div class="step" [ngClass]="getStepClass(3)">
       <div class="step-icon">
         <span *ngIf="!isStepCompleted(3)">3</span>
@@ -25,7 +24,7 @@
       </div>
       <span class="step-label">PAYMENT INFORMATION</span>
     </div>
-    
+
     <div class="step" [ngClass]="getStepClass(4)">
       <div class="step-icon">
         <span *ngIf="!isStepCompleted(4)">4</span>
@@ -41,16 +40,13 @@
       <div class="form-row">
         <div class="form-group full">
           <label for="firstName">Full Name <span class="required">*</span></label>
-          <input 
-            id="firstName"
-            type="text" 
-            formControlName="firstName" 
-            class="form-control"
-            [class.error]="billingForm.get('firstName')?.invalid && billingForm.get('firstName')?.touched"
-          />
-          <div *ngIf="billingForm.get('firstName')?.invalid && billingForm.get('firstName')?.touched" class="error-message">
+          <input id="firstName" type="text" formControlName="firstName" class="form-control"
+            [class.error]="billingForm.get('firstName')?.invalid && billingForm.get('firstName')?.touched" />
+          <div *ngIf="billingForm.get('firstName')?.invalid && billingForm.get('firstName')?.touched"
+            class="error-message">
             <span *ngIf="billingForm.get('firstName')?.errors?.['required']">Full name is required</span>
-            <span *ngIf="billingForm.get('firstName')?.errors?.['minlength']">Full name must be at least 2 characters</span>
+            <span *ngIf="billingForm.get('firstName')?.errors?.['minlength']">Full name must be at least 2
+              characters</span>
           </div>
         </div>
       </div>
@@ -58,28 +54,18 @@
       <div class="form-row">
         <div class="form-group half">
           <label for="city">City <span class="required">*</span></label>
-          <input 
-            id="city"
-            type="text" 
-            formControlName="city" 
-            class="form-control"
-            [class.error]="billingForm.get('city')?.invalid && billingForm.get('city')?.touched"
-          />
+          <input id="city" type="text" formControlName="city" class="form-control"
+            [class.error]="billingForm.get('city')?.invalid && billingForm.get('city')?.touched" />
           <div *ngIf="billingForm.get('city')?.invalid && billingForm.get('city')?.touched" class="error-message">
             <span *ngIf="billingForm.get('city')?.errors?.['required']">City is required</span>
             <span *ngIf="billingForm.get('city')?.errors?.['minlength']">City must be at least 2 characters</span>
           </div>
         </div>
-        
+
         <div class="form-group half">
           <label for="zipCode">Zip/Postal Code <span class="required">*</span></label>
-          <input 
-            id="zipCode"
-            type="text" 
-            formControlName="zipCode" 
-            class="form-control"
-            [class.error]="billingForm.get('zipCode')?.invalid && billingForm.get('zipCode')?.touched"
-          />
+          <input id="zipCode" type="text" formControlName="zipCode" class="form-control"
+            [class.error]="billingForm.get('zipCode')?.invalid && billingForm.get('zipCode')?.touched" />
           <div *ngIf="billingForm.get('zipCode')?.invalid && billingForm.get('zipCode')?.touched" class="error-message">
             <span *ngIf="billingForm.get('zipCode')?.errors?.['required']">Postal code is required</span>
             <span *ngIf="billingForm.get('zipCode')?.errors?.['pattern']">Valid 6-digit postal code is required</span>
@@ -92,7 +78,7 @@
           <label for="state">State/Province</label>
           <input id="state" type="text" formControlName="state" class="form-control" />
         </div>
-        
+
         <div class="form-group half">
           <label for="country">Country <span class="required">*</span></label>
           <select id="country" formControlName="country" class="form-control">
@@ -104,28 +90,18 @@
       <div class="form-row">
         <div class="form-group half">
           <label for="phone">Phone Number <span class="required">*</span></label>
-          <input 
-            id="phone"
-            type="tel" 
-            formControlName="phone" 
-            class="form-control"
-            [class.error]="billingForm.get('phone')?.invalid && billingForm.get('phone')?.touched"
-          />
+          <input id="phone" type="tel" formControlName="phone" class="form-control"
+            [class.error]="billingForm.get('phone')?.invalid && billingForm.get('phone')?.touched" />
           <div *ngIf="billingForm.get('phone')?.invalid && billingForm.get('phone')?.touched" class="error-message">
             <span *ngIf="billingForm.get('phone')?.errors?.['required']">Phone number is required</span>
             <span *ngIf="billingForm.get('phone')?.errors?.['pattern']">Valid 10-digit phone number is required</span>
           </div>
         </div>
-        
+
         <div class="form-group half">
           <label for="email">Email <span class="required">*</span></label>
-          <input 
-            id="email"
-            type="email" 
-            formControlName="email" 
-            class="form-control"
-            [class.error]="billingForm.get('email')?.invalid && billingForm.get('email')?.touched"
-          />
+          <input id="email" type="email" formControlName="email" class="form-control"
+            [class.error]="billingForm.get('email')?.invalid && billingForm.get('email')?.touched" />
           <div *ngIf="billingForm.get('email')?.invalid && billingForm.get('email')?.touched" class="error-message">
             <span *ngIf="billingForm.get('email')?.errors?.['required']">Email is required</span>
             <span *ngIf="billingForm.get('email')?.errors?.['email']">Valid email is required</span>
@@ -150,7 +126,7 @@
           <p class="shipping-note" *ngIf="shippingFee === 0">Free shipping on orders over ₹500</p>
         </div>
       </div>
-      
+
       <div class="form-actions">
         <button type="button" class="btn btn-secondary" (click)="previousStep()">← BACK</button>
         <button type="button" class="btn btn-primary" (click)="nextStep()">CONTINUE</button>
@@ -165,12 +141,7 @@
         <h3>Payment Method</h3>
         <div class="payment-option" *ngFor="let method of paymentMethods">
           <label class="radio-label" [class.disabled]="!method.available">
-            <input 
-              type="radio" 
-              [value]="method.value" 
-              formControlName="paymentMethod"
-              [disabled]="!method.available"
-            />
+            <input type="radio" [value]="method.value" formControlName="paymentMethod" [disabled]="!method.available" />
             <span class="radio-custom"></span>
             {{ method.label }}
           </label>
@@ -181,14 +152,8 @@
       <div *ngIf="selectedPaymentMethod === 'upi'" class="upi-payment">
         <div class="form-group">
           <label for="upiId">UPI ID <span class="required">*</span></label>
-          <input 
-            id="upiId"
-            type="text" 
-            formControlName="upiId" 
-            class="form-control"
-            placeholder="example@upi"
-            [class.error]="paymentForm.get('upiId')?.invalid && paymentForm.get('upiId')?.touched"
-          />
+          <input id="upiId" type="text" formControlName="upiId" class="form-control" placeholder="example@upi"
+            [class.error]="paymentForm.get('upiId')?.invalid && paymentForm.get('upiId')?.touched" />
           <div *ngIf="paymentForm.get('upiId')?.invalid && paymentForm.get('upiId')?.touched" class="error-message">
             <span *ngIf="paymentForm.get('upiId')?.errors?.['required']">UPI ID is required</span>
             <span *ngIf="paymentForm.get('upiId')?.errors?.['pattern']">Please enter a valid UPI ID</span>
@@ -200,15 +165,8 @@
       <div *ngIf="selectedPaymentMethod === 'wallet'" class="wallet-payment">
         <div class="form-group">
           <label for="walletAmount">Wallet Amount to Use</label>
-          <input 
-            id="walletAmount"
-            type="number" 
-            formControlName="walletAmount" 
-            class="form-control"
-            min="0"
-            [max]="total"
-            placeholder="0"
-          />
+          <input id="walletAmount" type="number" formControlName="walletAmount" class="form-control" min="0"
+            [max]="total" placeholder="0" />
           <small class="help-text">Enter amount to use from wallet (optional)</small>
         </div>
       </div>
@@ -224,33 +182,33 @@
   <div *ngIf="currentStep === 4 && !orderNumber" class="step-content">
     <div class="order-review">
       <h3>Order Summary</h3>
-      
+
       <!-- Cart Items with Delete Option -->
       <div class="cart-items-review">
         <div class="cart-item" *ngFor="let item of cartItems">
           <div class="item-image">
-            <img 
-                  *ngIf="item.image" 
-                  [src]="item.image" 
-                  (error)="item.image = null" 
-                  alt="Artwork"
-                  width="100" height="100"
-            />
+            <img *ngIf="item.image" [src]="item.image" (error)="item.image = null" alt="Artwork" width="100"
+              height="100" />
 
           </div>
           <div class="item-details">
             <h4>{{ item.artwork_name }}</h4>
             <p class="item-price">₹{{ item.price | number:'1.0-0' }} × {{ item.quantity }}</p>
             <div class="quantity-controls">
-              <button type="button" class="qty-btn" (click)="updateCartItemQuantity(item.cart_id, item.quantity - 1)">-</button>
+              <button type="button" class="qty-btn"
+                (click)="updateCartItemQuantity(item.cart_id, item.quantity - 1)">-</button>
               <span class="quantity">{{ item.quantity }}</span>
-              <button type="button" class="qty-btn" (click)="updateCartItemQuantity(item.cart_id, item.quantity + 1)">+</button>
+              <button type="button" class="qty-btn"
+                (click)="updateCartItemQuantity(item.cart_id, item.quantity + 1)">+</button>
             </div>
+            <p *ngIf="cartErrors[item.cart_id]" class="cart-error">
+              {{ cartErrors[item.cart_id] }}
+            </p>
           </div>
           <div class="item-total">
             <span class="total-price">₹{{ (item.price * item.quantity) | number:'1.0-0' }}</span>
             <button type="button" class="delete-btn" (click)="deleteCartItem(item.cart_id)" title="Remove item">
-              🗑️
+               <i class="fas fa-trash text-muted"></i>
             </button>
           </div>
         </div>
@@ -285,10 +243,7 @@
 
       <div class="form-actions">
         <button type="button" class="btn btn-secondary" (click)="previousStep()">← BACK</button>
-        <button 
-          type="button" 
-          class="btn btn-primary" 
-          (click)="placeOrder()" 
+        <button type="button" class="btn btn-primary" (click)="placeOrder()"
           [disabled]="isProcessing || cartItems.length === 0">
           {{ isProcessing ? 'PROCESSING...' : 'PLACE ORDER' }}
         </button>

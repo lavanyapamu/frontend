@@ -247,23 +247,29 @@
 
 /* Pagination */
 .pagination-section {
-  padding: 20px;
+  padding: 40px;
   background: white;
   border-top: 1px solid #e1e8ed;
+  align-items: end;
   
   
 }
 
 .pagination {
   margin-bottom: 15px;
+   padding: 4px 8px;   /* smaller height & width */
+  font-size: 0.85rem; /* reduce font size */
+  min-width: 32px;
 }
 
 .page-link {
   color: #3498db;
   border: 1px solid #dee2e6;
-  padding: 8px 12px;
+ padding: 4px 8px;
   margin: 0 2px;
   border-radius: 6px;
+   font-size: 0.85rem;
+   min-width: 32px;
   transition: all 0.2s ease;
 }
 

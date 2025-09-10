@@ -1,3 +1,8 @@
+.dashboard-header {
+  padding: 0.5rem 0.1rem;
+ 
+  margin-bottom: 8px;
+}
 
 .stats-grid {
   display: grid;
@@ -7,16 +12,25 @@
 }
 
 .stat-card {
-  background: white;
+  position: relative;
+  overflow: hidden;
   padding: 1.2rem 1rem;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  position: relative;
-  overflow: hidden;
   min-height: 80px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+.stat-card i {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2rem;
+  color: rgba(255, 255, 255, 0.151); /* transparent/overlay look */
+  pointer-events: none; /* avoids interfering with clicks */
 }
 
 .stat-card h3 {
@@ -25,6 +39,7 @@
   margin-bottom: 0.5rem;
   text-transform: capitalize;
   font-weight: 500;
+  z-index: 1;
 }
 
 .stat-number {
@@ -50,9 +65,7 @@
   background: linear-gradient(135deg, #78909c, #90a4ae);
 }
 
-/* .stat-card.gray h3 {
-  display: none;
-} */
+
 
 
 .artworks-section {

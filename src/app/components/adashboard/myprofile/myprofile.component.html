@@ -46,4 +46,38 @@
 
     <button type="submit" class="update-btn" *ngIf="isEditMode">Update Profile</button>
   </form>
+  <div class="change">
+    <!-- Show only button if form is hidden -->
+    <button class="but" *ngIf="!showChangePassword" (click)="toggleChangePassword()">
+      Change Password
+    </button>
+
+    <!-- Show form if toggled -->
+    <form *ngIf="showChangePassword" (ngSubmit)="onChangePassword()" class="password-form">
+
+      <!-- Current Password -->
+      <div class="form-group position-relative">
+        <label>Current Password</label>
+        <input [type]="showCurrentPassword ? 'text' : 'password'" [(ngModel)]="passwordForm.currentPassword"
+          name="currentPassword" class="form-control" required />
+        <i class="fa" [ngClass]="showCurrentPassword ? 'fa-eye-slash' : 'fa-eye'"
+          (click)="showCurrentPassword = !showCurrentPassword"
+          style="position:absolute; right:10px; top:38px; cursor:pointer;">
+        </i>
+      </div>
+
+      <!-- New Password -->
+      <div class="form-group position-relative">
+        <label>New Password</label>
+        <input [type]="showNewPassword ? 'text' : 'password'" [(ngModel)]="passwordForm.newPassword" name="newPassword"
+          class="form-control" required />
+        <i class="fa" [ngClass]="showNewPassword ? 'fa-eye-slash' : 'fa-eye'"
+          (click)="showNewPassword = !showNewPassword" style="position:absolute; right:10px; top:38px; cursor:pointer;">
+        </i>
+      </div>
+
+      <button type="submit" class="but">Update Password</button>
+      <button type="button" class="but cancel" (click)="toggleChangePassword()">Cancel</button>
+    </form>
+  </div>
 </div>

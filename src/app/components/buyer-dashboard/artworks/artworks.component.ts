@@ -21,7 +21,7 @@ export class BuyerArtworksComponent {
   imageURL = "http://localhost:5000/static/uploads/";
   user_id: string = '';
   user = signal<any | null>(null);
-  
+  filters: { categories: string[]; styles: string[] } = { categories: [], styles: [] };
 
   // Search and Filter properties
   searchTerm: string = '';
@@ -40,6 +40,7 @@ export class BuyerArtworksComponent {
     this.loadCartItems();
     this.loadWishlistItems();
     this.loadUser();
+    this.loadFilters();
   }
 
   
@@ -262,7 +263,8 @@ loadUser(): void {
 
   this.http.get<any>(`http://localhost:5000/api/users/${this.user_id}`, { headers }).subscribe({
     next: (response) => {
-      this.user.set(response); // since you're using signals
+      this.user.set(response); 
+     // since you're using signals
     },
     error: (error) => {
       console.error('Failed to load user:', error);
@@ -355,6 +357,17 @@ loadUser(): void {
       this.addToWishlist(artwork);
     }
   }
+  loadFilters(): void {
+  this.http.get<{ categories: string[], styles: string[] }>(
+    `http://localhost:5000/api/artworks/filters`
+  ).subscribe({
+    next: (response) => {
+      this.filters = response;
+    },
+    error: (err) => {
+      console.error('Failed to load filters:', err);
+    }
+  });
   
-  
+  }
 }

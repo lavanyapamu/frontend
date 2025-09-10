@@ -8,7 +8,7 @@
   <nav class="header-nav">
     <a routerLink="/artistd/orders" routerLinkActive="active" class="nav-link">Orders</a>
     <a routerLink="/artistd/dashboard" routerLinkActive="active" class="nav-link">Dashboard</a>
-    <a routerLink="/artistd/myprofile" routerLinkActive="active" class="nav-link">My Profile</a>
+    <!-- <a routerLink="/artistd/myprofile" routerLinkActive="active" class="nav-link">My Profile</a> -->
   </nav>
 
   <div class="header-right">
@@ -20,13 +20,9 @@
         </ng-template>
       </div>
       <div class="dropdown-content">
-        <!-- <a href="#" class="dropdown-item">
-          <span class="dropdown-icon">⚙️</span>
-          Settings
-        </a> -->
         <hr class="dropdown-divider">
         <a (click)="logout()" class="dropdown-item logout">
-          <span class="dropdown-icon">🚪</span>
+          <span class="dropdown-icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
           Logout
         </a>
       </div>

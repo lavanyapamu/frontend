@@ -74,7 +74,7 @@ export class CheckoutComponent implements OnInit {
   selectedPaymentMethod = 'cod';
   isProcessing = false;
   orderNumber = '';
-
+  cartErrors: { [cartId: number]: string } = {}; 
   constructor(
     private sanitizer: DomSanitizer,
     private fb: FormBuilder,
@@ -296,11 +296,18 @@ export class CheckoutComponent implements OnInit {
           item.quantity = newQuantity;
           this.calculateTotals();
         }
+        this.cartErrors[cartId] = '';
       },
-      error: (err) => {
-        console.error('Failed to update cart item quantity', err);
-        alert('Failed to update quantity. Please try again.');
+     error: (err) => {
+      console.error('Failed to update cart item quantity', err);
+
+      // ✅ Show backend error message if available
+      if (err.error && err.error.error) {
+        this.cartErrors[cartId] = err.error.error;
+      } else {
+          this.cartErrors[cartId] = 'Failed to update quantity. Please try again.';
       }
+    }
     });
   }
 

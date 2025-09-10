@@ -1,54 +1,66 @@
- <!-- Cart View -->
- <div class="content-section">
-    <div class="section-header">
-      <h2>Shopping Cart</h2>
-      <button class="clear-cart-btn" (click)="clearCart()" *ngIf="cartItems.length > 0">
-        Clear Cart
-      </button>
-    </div>
+<!-- cart.component.html -->
+<div class="content-section">
+  <div class="section-header">
+    <h2>Shopping Cart</h2>
+    <button class="clear-cart-btn" (click)="clearCart()" *ngIf="cartItems.length > 0">
+      Clear Cart
+    </button>
+  </div>
 
-    <div *ngIf="cartItems.length === 0" class="empty-message">
-      <div class="empty-icon">🛒</div>
-      <h3>Your cart is empty</h3>
-      <p>Browse artworks and add items to your cart</p>
-      <button class="browse-btn" (click)="goToArtworks()">Browse Artworks</button>
-    </div>
+  <div *ngIf="cartItems.length === 0" class="empty-message">
+    <div class="empty-icon">🛒</div>
+    <h3>Your cart is empty</h3>
+    <p>Browse artworks and add items to your cart</p>
+    <button class="browse-btn" (click)="goToArtworks()">Browse Artworks</button>
+  </div>
 
-    <div *ngIf="cartItems.length > 0" class="cart-items">
-      <div class="cart-item" *ngFor="let item of cartItems">
-        <div class="item-image">
-          <img [src]="imageURL + item.artwork?.image" [alt]="item.artwork?.title" />
-        </div>
-        <div class="item-details">
-          <h4>{{ item.artwork?.title }}</h4>
-          <p class="item-category">{{ item.artwork?.category }}</p>
-          <div class="item-price">
-            <div class="quantity-control">
-              <button class="qty-btn" (click)="decreaseQuantity(item)">
-                <i class="fas fa-minus"></i>
-              </button>
-              <span class="quantity">{{ item.quantity }}</span>
-              <button class="qty-btn" (click)="increaseQuantity(item)">
-                <i class="fas fa-plus"></i>
-              </button>
-            </div>
-            <span class="price">₹{{ item.price }}</span>
+  <div *ngIf="cartItems.length > 0" class="cart-items">
+    <div class="cart-item" *ngFor="let item of cartItems; trackBy: trackByCartId">
+      <div class="item-image">
+        <img [src]="imageURL + item.artwork?.image" [alt]="item.artwork?.title" />
+      </div>
+
+      <div class="item-details">
+        <h4>{{ item.artwork?.title }}</h4>
+        <p class="item-category">{{ item.artwork?.category }}</p>
+
+        <div class="item-price">
+          <div class="quantity-control">
+            <button class="qty-btn"
+                    (click)="decreaseQuantity(item)"
+                    [disabled]="isItemUpdating(item.cart_id)">
+              <i class="fas fa-minus"></i>
+            </button>
+
+            <span class="quantity">{{ item.quantity }}</span>
+
+            <button class="qty-btn"
+                    (click)="increaseQuantity(item)"
+                    [disabled]="item.quantity >= (item.artwork?.stock || 0) || isItemUpdating(item.cart_id)">
+              <i class="fas fa-plus"></i>
+            </button>
           </div>
-          
+
+          <span class="price">₹{{ item.price }}</span>
         </div>
-        <div class="item-actions">
-          <button class="remove-btn" (click)="removeFromCart(item.cart_id)">
-            Remove
-          </button>
+
+        <div class="stock-warning" *ngIf="item.quantity >= (item.artwork?.stock || 0)">
+          Only {{ item.artwork?.stock || 0 }} in stock
         </div>
       </div>
 
-      <div class="cart-summary">
-        <div class="total-section">
-          <h3>Total: ₹{{ getCartTotal() }}</h3>
-          <button class="checkout-btn" (click)="goToCheckout()">Proceed to Checkout</button>
-        </div>
+      <div class="item-actions">
+        <button class="remove-btn" (click)="removeFromCart(item.cart_id)">
+          Remove
+        </button>
+      </div>
+    </div>
+
+    <div class="cart-summary">
+      <div class="total-section">
+        <h3>Total: ₹{{ getCartTotal() }}</h3>
+        <button class="checkout-btn" (click)="goToCheckout()">Proceed to Checkout</button>
       </div>
     </div>
   </div>
-
+</div>

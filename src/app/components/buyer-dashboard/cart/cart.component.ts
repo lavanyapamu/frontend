@@ -1,3 +1,4 @@
+// cart.component.ts
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
@@ -23,8 +24,8 @@ export class CartComponent {
   loadCartItems(): void {
     this.http.get<any>(`http://localhost:5000/api/cart/user/${this.user_id}`).subscribe({
       next: (response) => {
-        // Sort items by cart_id to maintain consistent order
-        this.cartItems = response.data.sort((a: any, b: any) => a.cart_id - b.cart_id);
+        // response.data should include artwork.stock (from backend)
+        this.cartItems = (response.data || []).sort((a: any, b: any) => a.cart_id - b.cart_id);
       },
       error: (error) => {
         console.error('Failed to load cart items:', error);
@@ -71,7 +72,7 @@ export class CartComponent {
   }
 
   getCartTotal(): number {
-    return this.cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+    return this.cartItems.reduce((total, item) => total + (Number(item.price) * Number(item.quantity)), 0);
   }
 
   goToCheckout(): void {
@@ -80,6 +81,12 @@ export class CartComponent {
 
   increaseQuantity(item: any): void {
     if (this.updatingItems.has(item.cart_id)) return; // Prevent multiple requests
+
+    const stock = item?.artwork?.stock ?? 0;
+    if (item.quantity >= stock) {
+      alert(`You reached the maximum available quantity (${stock}).`);
+      return;
+    }
     
     this.updatingItems.add(item.cart_id);
     
@@ -89,23 +96,22 @@ export class CartComponent {
       'Content-Type': 'application/json'
     };
 
-    const updatedItem = {
-      quantity: item.quantity + 1
-    };
+    const updatedItem = { quantity: item.quantity + 1 };
 
     this.http.put(`http://localhost:5000/api/cart/${item.cart_id}`, updatedItem, { headers }).subscribe({
-      next: (response) => {
-        // Update the item in place instead of reloading entire cart
-        const itemIndex = this.cartItems.findIndex(cartItem => cartItem.cart_id === item.cart_id);
-        if (itemIndex !== -1) {
-          this.cartItems[itemIndex].quantity = item.quantity + 1;
+      next: (_response) => {
+        const idx = this.cartItems.findIndex(ci => ci.cart_id === item.cart_id);
+        if (idx !== -1) {
+          this.cartItems[idx].quantity = item.quantity + 1;
         }
         this.updatingItems.delete(item.cart_id);
       },
       error: (error) => {
         console.error('Failed to increase quantity:', error);
-        alert('Failed to update cart');
+        alert(error?.error?.error || 'Failed to update cart');
         this.updatingItems.delete(item.cart_id);
+        // Optional: reload to re-sync with server reality
+        this.loadCartItems();
       }
     });
   }
@@ -126,23 +132,21 @@ export class CartComponent {
       'Content-Type': 'application/json'
     };
 
-    const updatedItem = {
-      quantity: item.quantity - 1
-    };
+    const updatedItem = { quantity: item.quantity - 1 };
 
     this.http.put(`http://localhost:5000/api/cart/${item.cart_id}`, updatedItem, { headers }).subscribe({
-      next: (response) => {
-        // Update the item in place instead of reloading entire cart
-        const itemIndex = this.cartItems.findIndex(cartItem => cartItem.cart_id === item.cart_id);
-        if (itemIndex !== -1) {
-          this.cartItems[itemIndex].quantity = item.quantity - 1;
+      next: (_response) => {
+        const idx = this.cartItems.findIndex(ci => ci.cart_id === item.cart_id);
+        if (idx !== -1) {
+          this.cartItems[idx].quantity = item.quantity - 1;
         }
         this.updatingItems.delete(item.cart_id);
       },
       error: (error) => {
         console.error('Failed to decrease quantity:', error);
-        alert('Failed to update cart');
+        alert(error?.error?.error || 'Failed to update cart');
         this.updatingItems.delete(item.cart_id);
+        this.loadCartItems();
       }
     });
   }

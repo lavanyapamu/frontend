@@ -11,5 +11,9 @@ import { SidenavComponent } from './sidenav/sidenav.component';
   styleUrl: './adashboard.component.css'
 })
 export class AdashboardComponent {
+    sidebarOpen = false;
 
+  toggleSidebar() {
+    this.sidebarOpen = !this.sidebarOpen;
+  }
 }

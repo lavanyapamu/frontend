@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
   selector: 'app-myprofile',
@@ -19,7 +20,14 @@ export class MyProfileComponent implements OnInit {
   profileImageFile!: File;
   earnings: number = 0;
 
-  constructor(private fb: FormBuilder, private http: HttpClient) {}
+  // 🔹 Change Password state
+  showChangePassword = false;
+  showCurrentPassword = false;
+  showNewPassword = false;
+
+  passwordForm = { currentPassword: '', newPassword: '' };
+
+  constructor(private fb: FormBuilder, private http: HttpClient) { }
 
   ngOnInit(): void {
     this.profileForm = this.fb.group({
@@ -32,7 +40,7 @@ export class MyProfileComponent implements OnInit {
   }
 
   get isArtist(): boolean {
-    return this.userRole === 'Artist';
+    return this.userRole.toLowerCase() === 'artist';
   }
 
   loadProfile(): void {
@@ -74,7 +82,7 @@ export class MyProfileComponent implements OnInit {
     if (file) {
       this.profileImageFile = file;
       const reader = new FileReader();
-      reader.onload = () => this.imagePreview = reader.result;
+      reader.onload = () => (this.imagePreview = reader.result);
       reader.readAsDataURL(file);
     }
   }
@@ -106,4 +114,34 @@ export class MyProfileComponent implements OnInit {
       }
     });
   }
-}
+
+  toggleChangePassword(): void {
+    this.showChangePassword = !this.showChangePassword;
+    if (!this.showChangePassword) {
+      this.passwordForm = { currentPassword: '', newPassword: '' };
+      this.showCurrentPassword = false;
+      this.showNewPassword = false;
+    }
+  }
+    // 🔹 Submit Change Password
+  onChangePassword(): void {
+      const token = localStorage.getItem('access_token') || '';
+      const userId = localStorage.getItem('user_id')
+    this.http.patch<any>(
+        `http://localhost:5000/api/users/${userId}/change-password`,
+        {
+          old_password: this.passwordForm.currentPassword,
+          new_password: this.passwordForm.newPassword
+        },
+        { headers: new HttpHeaders().set('Authorization', `Bearer ${token}`) }
+      ).subscribe({
+        next: (res) => {
+          alert(res.message || 'Password changed successfully');
+          this.toggleChangePassword();
+        },
+        error: (err) => {
+          alert(err.error?.error || 'Failed to change password');
+        }
+      });
+    }
+  }

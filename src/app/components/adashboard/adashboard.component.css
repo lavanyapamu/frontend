@@ -1,4 +1,53 @@
+.main-content {
+  display: flex;
+}
+
 .dashboard-content {
-    flex: 1;
-    padding: 2rem;
-     } 
+  flex: 1;
+  padding: 2rem;
+}
+
+/* Sidebar container wrapper for sidenav component */
+.sidebar-container {
+  width: 250px;
+  min-height: calc(100vh - 80px);
+}
+
+/* 🔽 On small screens */
+@media (max-width: 991px) {
+  .sidebar-container {
+    position: fixed;
+    top: 80px; /* adjust for header height */
+    left: 0;
+    height: calc(100vh - 80px);
+    width: 250px !important;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    z-index: 1050;
+    background: #fff;
+    overflow-y: auto;
+  }
+
+  .sidebar-container.active {
+    transform: translateX(0);
+  }
+
+  .dashboard-content {
+    padding: 1rem;
+    width: 100%;
+  }
+
+  .sidebar-toggle {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1100;
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 1.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+}

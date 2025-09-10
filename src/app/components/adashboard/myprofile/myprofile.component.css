@@ -4,6 +4,62 @@
   padding: 2rem;
   font-family: 'Arial', sans-serif;
 }
+/* 🔹 Change Password Section */
+.change {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background: #fafafa;
+}
+
+.password-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-top: 1rem;
+}
+
+.password-form .form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.password-form label {
+  font-weight: 500;
+  margin-bottom: 0.4rem;
+}
+
+.password-form input.form-control {
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* 🔹 Buttons inside Change Password */
+.but {
+  padding: 0.5rem 1.2rem;
+  background: #007bff;
+  border: none;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+.but:hover {
+  background: #0056b3;
+}
+
+/* Cancel button style */
+.but.cancel {
+  background: #dc3545;
+  margin-left: 1rem;
+}
+
+.but.cancel:hover {
+  background: #b52a37;
+}
 
 .profile-header {
   display: flex;

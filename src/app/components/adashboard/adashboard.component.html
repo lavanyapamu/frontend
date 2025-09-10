@@ -1,13 +1,13 @@
-
-
 <app-mainnav></app-mainnav>
-<main class="row">
-  <div class="col-lg-2">
+
+<!-- Sidebar + Content -->
+<main class="row main-content">
+  <div class="col-lg-2 sidebar-container" [class.active]="sidebarOpen">
     <app-sidenav></app-sidenav>
   </div>
+
   <div class="col-lg-10 dashboard-content">
+    <button class="sidebar-toggle d-lg-none" (click)="toggleSidebar()">☰</button>
     <router-outlet></router-outlet>
   </div>
 </main>
-
-    

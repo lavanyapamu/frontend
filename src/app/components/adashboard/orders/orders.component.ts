@@ -12,7 +12,7 @@ interface OrderItem {
   artwork_id: string;
   quantity: number;
   price: number;
-  status: string;  
+  status: string;
   artwork?: {
     artwork_id: string;
     title: string;
@@ -25,7 +25,7 @@ interface OrderItem {
 interface Order {
   order_id: string;
   user_id: string;
-  user_name:string;
+  user_name: string;
   total_price: number;
   status: string;
   created_at: string;
@@ -45,7 +45,7 @@ interface User {
 
 @Component({
   selector: 'app-orders',
-  imports:[CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './orders.component.html',
   styleUrls: ['./orders.component.css']
 })
@@ -56,152 +56,126 @@ export class OrdersComponent implements OnInit, OnDestroy {
   paginatedOrders: Order[] = [];
   selectedOrder: Order | null = null;
   users: { [key: string]: User } = {};
-  
+
   // Loading state
   isLoading: boolean = false;
-  
+
   // Filter and search properties
   searchTerm: string = '';
   selectedStatusFilter: string = '';
-  
+  statuses: string[] = [];
+
   // Pagination properties
   currentPage: number = 1;
-  itemsPerPage: number = 10;
+  itemsPerPage: number = 2;
   totalPages: number = 1;
-  
+
   // Subscription for auto-refresh
   private refreshSubscription: Subscription | null = null;
-  
-  // API base URL - adjust according to your backend
-  private readonly apiUrl = 'http://localhost:5000/api'; // Adjust this URL to match your Flask backend
-  
-  constructor(private http: HttpClient) {}
-  
+
+  // API base URL
+  private readonly apiUrl = 'http://localhost:5000/api';
+
+  constructor(private http: HttpClient) { }
+
   ngOnInit(): void {
+    this.loadFilters();
     this.loadOrders();
     this.startAutoRefresh();
   }
-  
+
   ngOnDestroy(): void {
-    if (this.refreshSubscription) {
-      this.refreshSubscription.unsubscribe();
-    }
+    this.refreshSubscription?.unsubscribe();
   }
-  
+
   /**
    * Load all orders from backend
    */
-loadOrders(): void {
- this.isLoading = true;
+  loadOrders(): void {
+    this.isLoading = true;
 
-  const artistId = localStorage.getItem('user_id'); // this time, the artist
-  const token = localStorage.getItem('access_token');
-  
-  if (!artistId || !token) {
-    console.error('No artist ID or token found in localStorage');
-    this.isLoading = false;
-    return;
-  }
+    const artistId = localStorage.getItem('user_id');
+    const token = localStorage.getItem('access_token');
 
-   const headers = new HttpHeaders({
-    'Authorization': `Bearer ${token}`
-  });
-
-  this.http.get<any>(`http://localhost:5000/api/orders/artist-orders/${artistId}`, { headers }).subscribe({
-    next: (response) => {
-      this.orders = Array.isArray(response.orders) ? response.orders : [];
-       // ✅ Fix: response.orders, not response
-    this.orders = Array.isArray(response.orders) ? response.orders : [];
-
-    // ✅ Set filteredOrders initially to all orders
-    this.filteredOrders = [...this.orders];
-
-    // ✅ Update pagination
-    this.updatePagination();
+    if (!artistId || !token) {
+      console.error('No artist ID or token found in localStorage');
       this.isLoading = false;
-    },
-    error: (error: HttpErrorResponse) => {
-      console.error('Error loading artist orders:', error);
-      this.isLoading = false;
-      alert('Failed to load artist orders.');
-      this.orders = [];
+      return;
     }
-  });
-}
 
-  
-  /**
-   * Load user details for orders (simplified since orders already contain items)
-   */
-  private loadUserDetails(): void {
-    const userPromises: Promise<void>[] = [];
-    
-    // Get unique user IDs
-    const uniqueUserIds = [...new Set(this.orders.map(order => order.user_id))];
-    
-    uniqueUserIds.forEach(userId => {
-      if (!this.users[userId]) {
-        const userPromise = new Promise<void>((resolve) => {
-          // Since you might not have a users endpoint, create a mock user
-          // You can replace this with actual API call if you have users endpoint
-          this.users[userId] = {
-            user_id: userId,
-            username: `Customer ${userId.substring(0, 8)}`,
-            email: `customer${userId.substring(0, 8)}@example.com`
-          };
-          resolve();
-        });
-        
-        userPromises.push(userPromise);
+    const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
+
+    this.http.get<any>(`${this.apiUrl}/orders/artist-orders/${artistId}`, { headers }).subscribe({
+      next: (response) => {
+        this.orders = Array.isArray(response.orders) ? response.orders : [];
+        this.filteredOrders = [...this.orders];
+        this.updatePagination();
+        this.isLoading = false;
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error loading artist orders:', error);
+        this.isLoading = false;
+        alert('Failed to load artist orders.');
+        this.orders = [];
       }
     });
-    
-    // Wait for all user details to load
-    Promise.all(userPromises).then(() => {
-      this.isLoading = false;
-      this.filterOrders();
-    });
   }
-  
+
   /**
    * Start auto-refresh for new orders (every 30 seconds)
    */
   private startAutoRefresh(): void {
-    this.refreshSubscription = interval(30000).subscribe(() => {
-      this.loadOrders();
-    });
+    this.refreshSubscription = interval(30000).subscribe(() => this.loadOrders());
   }
-  
+
   /**
    * Filter orders based on search term and status
    */
   filterOrders(): void {
     let filtered = [...this.orders];
-    
-    // Apply status filter
+
+    // Status filter
     if (this.selectedStatusFilter) {
       filtered = filtered.filter(order => order.status === this.selectedStatusFilter);
     }
-    
-    // Apply search filter
+
+    // Search filter
     if (this.searchTerm.trim()) {
       const searchLower = this.searchTerm.toLowerCase().trim();
-      filtered = filtered.filter(order => 
+      filtered = filtered.filter(order =>
         order.order_id.toLowerCase().includes(searchLower) ||
-        this.getUserName(order.user_id).toLowerCase().includes(searchLower) ||
-        order.items.some(item => 
+        this.getUserName(order.user_name).toLowerCase().includes(searchLower) ||
+        order.items.some(item =>
           item.artwork?.title?.toLowerCase().includes(searchLower) ||
           item.artwork_id.toLowerCase().includes(searchLower)
         )
       );
     }
-    
+
     this.filteredOrders = filtered;
     this.updatePagination();
   }
-  
+
   /**
-   * Update pagination based on filtered orders
+   * Load available filters (statuses from backend)
+   */
+loadFilters(): void {
+  const token = localStorage.getItem('access_token');
+  const headers = token ? { headers: new HttpHeaders({ 'Authorization': `Bearer ${token}` }) } : {};
+
+  this.http.get<any>(`${this.apiUrl}/artworks/filters`, headers).subscribe({
+    next: (response) => {
+      this.statuses = response.statuses || [];
+    },
+    error: (err) => {
+      console.error("Failed to load filters", err);
+    }
+  });
+}
+
+
+  /**
+   * Pagination logic
    */
   private updatePagination(): void {
     this.totalPages = Math.ceil(this.filteredOrders.length / this.itemsPerPage);
@@ -210,203 +184,154 @@ loadOrders(): void {
     }
     this.updatePaginatedOrders();
   }
-  
-  /**
-   * Update paginated orders for current page
-   */
+
   private updatePaginatedOrders(): void {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
     this.paginatedOrders = this.filteredOrders.slice(startIndex, endIndex);
   }
-  
-  /**
-   * Navigate to specific page
-   */
+
   goToPage(page: number): void {
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
       this.updatePaginatedOrders();
     }
   }
-  
-  /**
-   * Get page numbers for pagination
-   */
+
   getPageNumbers(): number[] {
     const pages: number[] = [];
     const maxPagesToShow = 5;
     const halfPages = Math.floor(maxPagesToShow / 2);
-    
+
     let startPage = Math.max(1, this.currentPage - halfPages);
     let endPage = Math.min(this.totalPages, startPage + maxPagesToShow - 1);
-    
+
     if (endPage - startPage + 1 < maxPagesToShow) {
       startPage = Math.max(1, endPage - maxPagesToShow + 1);
     }
-    
+
     for (let i = startPage; i <= endPage; i++) {
       pages.push(i);
     }
-    
+
     return pages;
   }
-  
-  /**
-   * Get start index for pagination info
-   */
+
   getStartIndex(): number {
     return (this.currentPage - 1) * this.itemsPerPage;
   }
-  
-  /**
-   * Get end index for pagination info
-   */
+
   getEndIndex(): number {
     return Math.min(this.getStartIndex() + this.itemsPerPage, this.filteredOrders.length);
   }
-  
+
   /**
-   * Update order status
+   * Update order item status
    */
-  // updateOrderStatus(orderId: string, event: any): void {
-  //   const newStatus = event.target.value;
-  //   const originalOrder = this.orders.find(o => o.order_id === orderId);
-  //   const originalStatus = originalOrder?.status;
-
-  //   const token = localStorage.getItem('access_token'); // 👈 stored at login
-  //     if (!token) {
-  //     alert('You are not logged in!');
-  //     return;
-  //    }
-
-  // const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-  //   console.log("PUT URL:", `${this.apiUrl}/orders/${orderId}/status`);
-  //   this.http.put(`${this.apiUrl}/orders/${orderId}/status`, { status: newStatus }, { headers }  ).subscribe({
-  //     next: (response) => {
-  //       // Update local order status
-  //       const order = this.orders.find(o => o.order_id === orderId);
-  //       if (order) {
-  //         order.status = newStatus;
-  //         // order.updated_at = new Date().toISOString();
-  //       }
-  //       this.filterOrders();
-  //       console.log('Order status updated successfully');
-  //     },
-  //     error: (error: HttpErrorResponse) => {
-  //       console.error('Error updating order status:', error);
-  //       // Revert the dropdown to previous value
-  //       event.target.value = originalStatus || 'pending';
-  //       alert('Failed to update order status. Please try again.');
-  //     }
-  //   });
-  // }
-  
-
-
   updateOrderItemStatus(orderId: string, orderItemId: string, event: Event): void {
-  const selectElement = event.target as HTMLSelectElement;
-  const newStatus = selectElement.value;
+    const selectElement = event.target as HTMLSelectElement;
+    const newStatus = selectElement.value;
 
-  const token = localStorage.getItem('access_token');
-  if (!token) {
-    alert('You are not logged in!');
-    return;
-  }
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      alert('You are not logged in!');
+      return;
+    }
 
-  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const url = `${this.apiUrl}/order-items/items/${orderItemId}/status`;
 
-  const url = `${this.apiUrl}/order-items/items/${orderItemId}/status`;
-  console.log("PUT URL:", url);
-
-  this.http.put(url, { status: newStatus }, { headers })
-    .subscribe({
+    this.http.put(url, { status: newStatus }, { headers }).subscribe({
       next: () => {
-        // Update local state
         const order = this.orders.find(o => o.order_id === orderId);
         const item = order?.items.find(i => i.order_item_id === orderItemId);
-        if (item) {
-          item.status = newStatus;
+        if (item) item.status = newStatus;
+           // 🔥 Recalculate parent order’s status immediately
+        if (order) {
+            this.updateOrderStatus(order);
         }
-
-        // Refresh order status summary (optional)
         this.filterOrders();
         console.log('Order item status updated successfully');
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error updating order item status:', error);
-
-        // Revert dropdown
         const order = this.orders.find(o => o.order_id === orderId);
         const item = order?.items.find(i => i.order_item_id === orderItemId);
-        if (item) {
-          selectElement.value = item.status || 'pending';
-        }
-
+        if (item) selectElement.value = item.status || 'pending';
         alert('Failed to update item status. Please try again.');
       }
     });
-}
+  }
 
   /**
    * View order details
    */
+  viewOrderDetails(order: Order): void {
+    this.selectedOrder = order;
+    $('#orderDetailsModal').modal('show');
+  }
 
-viewOrderDetails(order: Order): void {
-  this.selectedOrder = order;
-  $('#orderDetailsModal').modal('show');
-}
-  
   /**
-   * Get order count by status
+   * Helpers
    */
   getOrderCountByStatus(status: string): number {
     return this.orders.filter(order => order.status === status).length;
   }
-  
-  /**
-   * Get total quantity for an order
-   */
+
   getTotalQuantity(order: Order): number {
     return order.items.reduce((total, item) => total + item.quantity, 0);
   }
-  
-  /**
-   * Format date for display
-   */
+  private updateOrderStatus(order: Order): void {
+  if (!order) return;
+
+  const statuses = order.items.map(i => i.status);
+
+  if (statuses.every(s => s === 'delivered')) {
+    order.status = 'delivered';
+  } else if (statuses.every(s => s === 'confirmed')) {
+    order.status = 'confirmed';
+  } else if (statuses.every(s => s === 'shipped')) {
+    order.status = 'shipped';
+  } else if (statuses.every(s => s === 'cancelled')) {
+    order.status = 'cancelled';
+  } else if (statuses.every(s => s === 'pending')) {
+    order.status = 'pending';
+  } else {
+    order.status = 'processing'; // fallback for mixed statuses
+  }
+
+  // 🔥 Keep modal in sync
+  if (this.selectedOrder && this.selectedOrder.order_id === order.order_id) {
+    this.selectedOrder.status = order.status;
+  }
+}
+
   formatDate(dateString: string): string {
     const date = new Date(dateString);
-    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return date.toLocaleDateString() + ' ' +
+      date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
-  
-  /**
-   * Get status label for display
-   */
+
   getStatusLabel(status: string): string {
     const statusLabels: { [key: string]: string } = {
       'pending': 'Pending',
       'confirmed': 'Confirmed',
       'shipped': 'Shipped',
       'delivered': 'Delivered',
-      'returned':'Returned',
-      'refunded':'Refunded',
+      'returned': 'Returned',
+      'refunded': 'Refunded',
       'cancelled': 'Cancelled',
       'failed': 'Failed'
     };
     return statusLabels[status] || status;
   }
-  
-  /**
-   * Get user name by user ID
-   */
+
   getUserName(userId: string): string {
     const user = this.users[userId];
     if (user) {
-      return user.full_name || 
-             (user.first_name && user.last_name ? `${user.first_name} ${user.last_name}` : '') ||
-             user.username || 
-             user.email ||
-             `User ${userId.substring(0, 8)}`;
+      return user.full_name ||
+        (user.first_name && user.last_name ? `${user.first_name} ${user.last_name}` : '') ||
+        user.username || user.email || `User ${userId.substring(0, 8)}`;
     }
     return `User ${userId.substring(0, 8)}`;
   }
