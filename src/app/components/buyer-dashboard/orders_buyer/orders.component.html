@@ -79,11 +79,49 @@
             <button (click)="viewOrderDetails(order.order_id)" class="view-order-btn">
               VIEW ORDER
             </button>
+           
+             <button *ngIf="order.status.toLowerCase() !== 'delivered'" 
+                    (click)="openCancelModal(order)" 
+                    class="cancel-order-btn">Cancel</button>
+
+            <button *ngIf="order.status.toLowerCase() === 'delivered'" 
+                    (click)="openReviewModal(order)" 
+                    class="review-order-btn">Review</button>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
+<div class="modal-overlay" *ngIf="showCancelModal" (click)="closeCancelModal()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <h3>Select items to cancel</h3>
+    <div *ngFor="let item of selectedOrder?.order_items">
+      <input type="checkbox" [(ngModel)]="item.selectedToCancel" />
+      {{ item.artwork?.title || 'Artwork' }} - {{ formatCurrency(item.price) }}
+    </div>
+    <button (click)="submitCancel()" class="confirm-btn">Confirm Cancel</button>
+    <button (click)="closeCancelModal()" class="close-btn">Close</button>
+  </div>
+</div>
+<!-- ✅ Review Modal -->
+<div class="modal-overlay" *ngIf="showReviewModal" (click)="closeReviewModal()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <h3>Review Purchased Items</h3>
+    <div *ngFor="let item of selectedOrder?.order_items">
+      <div class="review-item">
+        <p>{{ item.artwork?.title || 'Artwork' }}</p>
+        <label>Rating: 
+          <select [(ngModel)]="item.tempRating">
+            <option *ngFor="let r of [1,2,3,4,5]" [value]="r">{{ r }}</option>
+          </select>
+        </label>
+        <textarea [(ngModel)]="item.tempReview" placeholder="Write your review"></textarea>
+        <button (click)="submitReview(item)" class="submit-review-btn">Submit Review</button>
+      </div>
+    </div>
+    <button (click)="closeReviewModal()" class="close-btn">Close</button>
+  </div>
+</div>
 
   <!-- Footer with item count -->
   <div *ngIf="!isLoading && orders.length > 0" class="orders-footer">

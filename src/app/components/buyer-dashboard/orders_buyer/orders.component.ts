@@ -17,10 +17,14 @@ export interface OrderItem {
     category_name?: {
       name: string;
     };
+
     style?: {
       name: string;
     };
   };
+  selectedToCancel?: boolean;  // ✅ For cancel checkbox
+  tempRating?: number;         // ✅ For review form
+  tempReview?: string;
 }
 
 export interface Order {
@@ -69,7 +73,8 @@ export class buyerOrdersComponent  implements OnInit {
   showOrderDetails = false;
   itemsPerPage = 10;
   availableItemsPerPage = [5, 10, 15, 20];
-
+  showCancelModal = false;
+  showReviewModal = false;
   constructor(
     public http: HttpClient,
     public router: Router
@@ -170,6 +175,49 @@ export class buyerOrdersComponent  implements OnInit {
   closeOrderDetails(): void {
     this.showOrderDetails = false;
     this.selectedOrder = null;
+  }
+  // ✅ Cancel logic
+  openCancelModal(order: Order) {
+    this.selectedOrder = order;
+    this.showCancelModal = true;
+  }
+  closeCancelModal() { this.showCancelModal = false; }
+  submitCancel() {
+    const itemsToCancel = this.selectedOrder?.order_items?.filter(i => i.selectedToCancel);
+    console.log('Cancelling items:', itemsToCancel);
+    // Call API here: POST /api/orders/cancel
+    this.closeCancelModal();
+  }
+  // ✅ Review logic
+openReviewModal(order: Order) {
+  const items = order.order_items || order.items || [];
+  const normalized = (items || []).map(i => ({
+    ...i,
+    tempRating: i.tempRating ?? 5,   // default 5 stars
+    tempReview: i.tempReview ?? ''
+  }));
+
+  this.selectedOrder = { ...order, order_items: normalized };
+  this.showReviewModal = true;
+}
+
+
+  closeReviewModal() { this.showReviewModal = false; 
+      setTimeout(() => this.selectedOrder = null, 200);
+  }
+  submitReview(item: OrderItem) {
+    const payload = {
+      user_id: this.user_id,
+      artwork_id: item.artwork_id,
+      rating: item.tempRating || 5,
+      review_text: item.tempReview || 'No review'
+    };
+    const headers = this.getAuthHeaders();
+    this.http.post(`http://localhost:5000/api/reviews`, payload, { headers })
+      .subscribe({
+        next: () => { alert('Review submitted!'); },
+        error: () => { alert('Failed to submit review'); }
+      });
   }
 
   getStatusClass(status: string): string {

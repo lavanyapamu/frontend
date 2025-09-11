@@ -69,7 +69,7 @@ export class ArtistComponent implements OnInit {
 
           this.totalOrders = allOrders.length;
           this.pendingOrders = allOrders.filter((o: any) => o.status === 'pending').length;
-          this.revenue = allOrders.reduce((sum: number, o: any) => sum + (o.total_price || 0), 0);
+          this.revenue = response.earnings || 0;
         },
         error: (err) => {
           console.error('Error fetching stats:', err);
